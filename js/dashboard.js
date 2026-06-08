@@ -1289,47 +1289,48 @@ function loadHistorique() {
 
   console.log('Appel API /historique...');
   
-  // Charger depuis l'API
-  apiCall('GET', '/historique', null, (data) => {
-    console.log('Réponse API historique:', data);
-    
-    if (!data || !Array.isArray(data)) {
-      console.warn('Pas de données ou pas un array');
-      activityList.innerHTML = '<li style="padding:20px"><p>Aucun historique disponible</p></li>';
-      return;
-    }
+  apiCall('/historique')
+    .then(data => {
+      console.log('Réponse API historique:', data);
+      
+      if (!data || !Array.isArray(data)) {
+        console.warn('Pas de données ou pas un array');
+        activityList.innerHTML = '<li style="padding:20px"><p>Aucun historique disponible</p></li>';
+        return;
+      }
 
-    console.log('Nombre d\'événements:', data.length);
+      console.log('Nombre d\'événements:', data.length);
 
-    activityList.innerHTML = data
-      .slice(0, 100)
-      .map(event => {
-        const dateStr = event.date_action ? new Date(event.date_action).toLocaleDateString('fr-FR', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit'
-        }) + ' · ' + new Date(event.date_action).toLocaleTimeString('fr-FR', {
-          hour: '2-digit',
-          minute: '2-digit'
-        }) : 'Date inconnue';
+      activityList.innerHTML = data
+        .slice(0, 100)
+        .map(event => {
+          const dateStr = event.date_action ? new Date(event.date_action).toLocaleDateString('fr-FR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+          }) + ' · ' + new Date(event.date_action).toLocaleTimeString('fr-FR', {
+            hour: '2-digit',
+            minute: '2-digit'
+          }) : 'Date inconnue';
 
-        return `
-          <li class="activity-item">
-            <div class="act-dot ${event.color}"><i class="fas ${event.icon}"></i></div>
-            <div class="act-body">
-              <div class="act-text">${event.message}</div>
-              <div class="act-time">${dateStr} · par Système</div>
-            </div>
-          </li>
-        `;
-      })
-      .join('');
-    
-    console.log('Historique chargé avec succès');
-  }, (err) => {
-    console.error('Erreur chargement historique:', err);
-    activityList.innerHTML = '<li style="padding:20px"><p>Erreur lors du chargement de l\'historique</p></li>';
-  });
+          return `
+            <li class="activity-item">
+              <div class="act-dot ${event.color}"><i class="fas ${event.icon}"></i></div>
+              <div class="act-body">
+                <div class="act-text">${event.message}</div>
+                <div class="act-time">${dateStr} · par Système</div>
+              </div>
+            </li>
+          `;
+        })
+        .join('');
+      
+      console.log('Historique chargé avec succès');
+    })
+    .catch(err => {
+      console.error('Erreur chargement historique:', err);
+      activityList.innerHTML = '<li style="padding:20px"><p>Erreur lors du chargement de l\'historique</p></li>';
+    });
 }
 
 /**
@@ -1348,46 +1349,48 @@ function filterHistorique(type) {
   const endpoint = type ? `/historique/${type}` : '/historique';
   console.log('Appel API:', endpoint);
 
-  apiCall('GET', endpoint, null, (data) => {
-    console.log('Réponse filtrée:', data);
-    
-    if (!data || !Array.isArray(data)) {
-      console.warn('Pas de données pour ce type');
-      activityList.innerHTML = '<li style="padding:20px"><p>Aucun événement pour cette catégorie</p></li>';
-      return;
-    }
+  apiCall(endpoint)
+    .then(data => {
+      console.log('Réponse filtrée:', data);
+      
+      if (!data || !Array.isArray(data)) {
+        console.warn('Pas de données pour ce type');
+        activityList.innerHTML = '<li style="padding:20px"><p>Aucun événement pour cette catégorie</p></li>';
+        return;
+      }
 
-    console.log('Nombre d\'événements filtrés:', data.length);
+      console.log('Nombre d\'événements filtrés:', data.length);
 
-    activityList.innerHTML = data
-      .slice(0, 100)
-      .map(event => {
-        const dateStr = event.date_action ? new Date(event.date_action).toLocaleDateString('fr-FR', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit'
-        }) + ' · ' + new Date(event.date_action).toLocaleTimeString('fr-FR', {
-          hour: '2-digit',
-          minute: '2-digit'
-        }) : 'Date inconnue';
+      activityList.innerHTML = data
+        .slice(0, 100)
+        .map(event => {
+          const dateStr = event.date_action ? new Date(event.date_action).toLocaleDateString('fr-FR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+          }) + ' · ' + new Date(event.date_action).toLocaleTimeString('fr-FR', {
+            hour: '2-digit',
+            minute: '2-digit'
+          }) : 'Date inconnue';
 
-        return `
-          <li class="activity-item">
-            <div class="act-dot ${event.color}"><i class="fas ${event.icon}"></i></div>
-            <div class="act-body">
-              <div class="act-text">${event.message}</div>
-              <div class="act-time">${dateStr} · par Système</div>
-            </div>
-          </li>
-        `;
-      })
-      .join('');
-    
-    console.log('Filtre appliqué avec succès');
-  }, (err) => {
-    console.error('Erreur filtrage historique:', err);
-    activityList.innerHTML = '<li style="padding:20px"><p>Erreur lors du chargement des événements</p></li>';
-  });
+          return `
+            <li class="activity-item">
+              <div class="act-dot ${event.color}"><i class="fas ${event.icon}"></i></div>
+              <div class="act-body">
+                <div class="act-text">${event.message}</div>
+                <div class="act-time">${dateStr} · par Système</div>
+              </div>
+            </li>
+          `;
+        })
+        .join('');
+      
+      console.log('Filtre appliqué avec succès');
+    })
+    .catch(err => {
+      console.error('Erreur filtrage historique:', err);
+      activityList.innerHTML = '<li style="padding:20px"><p>Erreur lors du chargement des événements</p></li>';
+    });
 }
 
 /* ==============================
