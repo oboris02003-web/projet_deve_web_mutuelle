@@ -136,21 +136,21 @@ INSERT INTO prets (adherent_id, montant, taux_interet, duree_mois, date_debut, d
 -- On récupère les IDs après insertion via currval
 -- ============================================
 INSERT INTO remboursements_prets (pret_id, numero_echeance, montant, date_echeance, date_paiement, statut, created_at, updated_at)
-SELECT p.id, 1, 11500, '2024-03-10', '2024-03-09', 'payée',      NOW(), NOW() FROM prets p WHERE p.adherent_id = 6  AND p.date_debut = '2024-02-10'
+SELECT p.id, 1, 11500, '2024-03-10'::date, '2024-03-09'::date, 'payée',      NOW(), NOW() FROM prets p WHERE p.adherent_id = 6  AND p.date_debut = '2024-02-10'
 UNION ALL
-SELECT p.id, 2, 11500, '2024-04-10', NULL,          'en attente', NOW(), NOW() FROM prets p WHERE p.adherent_id = 6  AND p.date_debut = '2024-02-10'
+SELECT p.id, 2, 11500, '2024-04-10'::date, NULL,          'en attente', NOW(), NOW() FROM prets p WHERE p.adherent_id = 6  AND p.date_debut = '2024-02-10'
 UNION ALL
-SELECT p.id, 1, 16000, '2024-03-15', '2024-03-14', 'payée',      NOW(), NOW() FROM prets p WHERE p.adherent_id = 7  AND p.date_debut = '2024-02-15'
+SELECT p.id, 1, 16000, '2024-03-15'::date, '2024-03-14'::date, 'payée',      NOW(), NOW() FROM prets p WHERE p.adherent_id = 7  AND p.date_debut = '2024-02-15'
 UNION ALL
-SELECT p.id, 2, 16000, '2024-04-15', '2024-04-13', 'payée',      NOW(), NOW() FROM prets p WHERE p.adherent_id = 7  AND p.date_debut = '2024-02-15'
+SELECT p.id, 2, 16000, '2024-04-15'::date, '2024-04-13'::date, 'payée',      NOW(), NOW() FROM prets p WHERE p.adherent_id = 7  AND p.date_debut = '2024-02-15'
 UNION ALL
-SELECT p.id, 3, 16000, '2024-05-15', NULL,          'en attente', NOW(), NOW() FROM prets p WHERE p.adherent_id = 7  AND p.date_debut = '2024-02-15'
+SELECT p.id, 3, 16000, '2024-05-15'::date, NULL,          'en attente', NOW(), NOW() FROM prets p WHERE p.adherent_id = 7  AND p.date_debut = '2024-02-15'
 UNION ALL
-SELECT p.id, 1, 14500, '2024-02-20', '2024-02-19', 'payée',      NOW(), NOW() FROM prets p WHERE p.adherent_id = 9  AND p.date_debut = '2024-01-20'
+SELECT p.id, 1, 14500, '2024-02-20'::date, '2024-02-19'::date, 'payée',      NOW(), NOW() FROM prets p WHERE p.adherent_id = 9  AND p.date_debut = '2024-01-20'
 UNION ALL
-SELECT p.id, 2, 14500, '2024-03-20', '2024-03-18', 'payée',      NOW(), NOW() FROM prets p WHERE p.adherent_id = 9  AND p.date_debut = '2024-01-20'
+SELECT p.id, 2, 14500, '2024-03-20'::date, '2024-03-18'::date, 'payée',      NOW(), NOW() FROM prets p WHERE p.adherent_id = 9  AND p.date_debut = '2024-01-20'
 UNION ALL
-SELECT p.id, 3, 14500, '2024-04-20', NULL,          'en attente', NOW(), NOW() FROM prets p WHERE p.adherent_id = 9  AND p.date_debut = '2024-01-20';
+SELECT p.id, 3, 14500, '2024-04-20'::date, NULL,          'en attente', NOW(), NOW() FROM prets p WHERE p.adherent_id = 9  AND p.date_debut = '2024-01-20';
 
 -- ============================================
 -- 7. SINISTRES
@@ -177,17 +177,17 @@ INSERT INTO prestations (sinistre_id, type_prestation, description, montant, dat
 (3, 'Remboursement accident',        'Frais chirurgie et plâtre bras droit',      100000, '2024-01-25', '2024-02-05', 'approuvé', NOW(), NOW());
 
 INSERT INTO prestations (sinistre_id, type_prestation, description, montant, date_demande, date_approbation, statut, created_at, updated_at)
-SELECT s.id, 'Remboursement accouchement',        'Frais clinique + médicaments + suivi postnatal',              120000, '2024-01-30', '2024-02-10', 'approuvé', NOW(), NOW() FROM sinistres s WHERE s.adherent_id = 6  AND s.date_sinistre = '2024-01-25'
+SELECT s.id, 'Remboursement accouchement',        'Frais clinique + médicaments + suivi postnatal',              120000, '2024-01-30'::date, '2024-02-10'::date, 'approuvé', NOW(), NOW() FROM sinistres s WHERE s.adherent_id = 6  AND s.date_sinistre = '2024-01-25'
 UNION ALL
-SELECT s.id, 'Remboursement accident',            'Consultation + radio + médicaments + kinésithérapie',          35000, '2024-03-15', '2024-03-25', 'approuvé', NOW(), NOW() FROM sinistres s WHERE s.adherent_id = 7  AND s.date_sinistre = '2024-03-10'
+SELECT s.id, 'Remboursement accident',            'Consultation + radio + médicaments + kinésithérapie',          35000, '2024-03-15'::date, '2024-03-25'::date, 'approuvé', NOW(), NOW() FROM sinistres s WHERE s.adherent_id = 7  AND s.date_sinistre = '2024-03-10'
 UNION ALL
-SELECT s.id, 'Remboursement optique',             'Consultation ophtalmologique + monture + verres',              20000, '2024-02-20', '2024-03-01', 'approuvé', NOW(), NOW() FROM sinistres s WHERE s.adherent_id = 8  AND s.date_sinistre = '2024-02-15'
+SELECT s.id, 'Remboursement optique',             'Consultation ophtalmologique + monture + verres',              20000, '2024-02-20'::date, '2024-03-01'::date, 'approuvé', NOW(), NOW() FROM sinistres s WHERE s.adherent_id = 8  AND s.date_sinistre = '2024-02-15'
 UNION ALL
-SELECT s.id, 'Remboursement décès',               'Participation aux frais funéraires traditionnels',            120000, '2024-01-10', '2024-01-20', 'approuvé', NOW(), NOW() FROM sinistres s WHERE s.adherent_id = 9  AND s.date_sinistre = '2024-01-05'
+SELECT s.id, 'Remboursement décès',               'Participation aux frais funéraires traditionnels',            120000, '2024-01-10'::date, '2024-01-20'::date, 'approuvé', NOW(), NOW() FROM sinistres s WHERE s.adherent_id = 9  AND s.date_sinistre = '2024-01-05'
 UNION ALL
-SELECT s.id, 'Remboursement hospitalisation',     'Chirurgie appendicite + hospitalisation 3 jours',             65000, '2024-04-25', '2024-05-05', 'approuvé', NOW(), NOW() FROM sinistres s WHERE s.adherent_id = 11 AND s.date_sinistre = '2024-04-20'
+SELECT s.id, 'Remboursement hospitalisation',     'Chirurgie appendicite + hospitalisation 3 jours',             65000, '2024-04-25'::date, '2024-05-05'::date, 'approuvé', NOW(), NOW() FROM sinistres s WHERE s.adherent_id = 11 AND s.date_sinistre = '2024-04-20'
 UNION ALL
-SELECT s.id, 'Remboursement accident domestique', 'Consultation + pansements + médicaments',                     25000, '2024-04-02', '2024-04-12', 'approuvé', NOW(), NOW() FROM sinistres s WHERE s.adherent_id = 13 AND s.date_sinistre = '2024-03-28';
+SELECT s.id, 'Remboursement accident domestique', 'Consultation + pansements + médicaments',                     25000, '2024-04-02'::date, '2024-04-12'::date, 'approuvé', NOW(), NOW() FROM sinistres s WHERE s.adherent_id = 13 AND s.date_sinistre = '2024-03-28';
 
 COMMIT;
 
