@@ -500,22 +500,38 @@ function renderQuickRetard(list) {
    ============================== */
 let cotChart = null;
 
-async function loadCotisationsChart(period) {
+async function loadCotisationsChart(period = '6m') {
   const ctx = document.getElementById('chart-cotisations');
   if (!ctx) return;
 
   try {
     const data  = await apiCall('/cotisations');
     const list  = data?.data || data || [];
-    const n     = period === '12m' ? 12 : 6;
     const now   = new Date();
-    const labels = [], values = [];
+    
+    // Déterminer le nombre de mois à afficher
+    const periodMap = {
+      '1m': 1, '3m': 3, '6m': 6, '12m': 12, '24m': 24, '36m': 36
+    };
+    const n = periodMap[period] || 6;
+    
+    const labels = [];
+    const values = [];
 
     for (let i = n - 1; i >= 0; i--) {
       const d      = new Date(now.getFullYear(), now.getMonth() - i, 1);
       const mm     = String(d.getMonth() + 1).padStart(2, '0');
       const yyyy   = d.getFullYear();
-      labels.push(d.toLocaleDateString('fr-FR', { month: 'short' }));
+      
+      // Afficher le mois/année adapté à la période
+      if (n <= 6) {
+        labels.push(d.toLocaleDateString('fr-FR', { month: 'short', day: 'numeric' }));
+      } else if (n <= 12) {
+        labels.push(d.toLocaleDateString('fr-FR', { month: 'short' }));
+      } else {
+        labels.push(d.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' }));
+      }
+      
       const total = list
         .filter(c =>
           (c.statut === 'payée' || c.statut === 'payé') &&
@@ -988,16 +1004,24 @@ async function loadCotisationsStats() {
     const data = await apiCall('/cotisations');
     const list  = data?.data || data || [];
 
-    // Mensuel sur l'année en cours
+    // Graphique mensuel : Dernières 12 mois
     const year   = new Date().getFullYear();
-    const months = Array.from({ length: 12 }, (_, i) => {
-      const d = new Date(year, i, 1);
-      return { label: d.toLocaleDateString('fr-FR', { month: 'short' }), mm: String(i + 1).padStart(2, '0') };
-    });
+    const now    = new Date();
+    const months = [];
+    
+    // Construire les 12 derniers mois
+    for (let i = 11; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      months.push({ 
+        label: d.toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' }), 
+        mm: String(d.getMonth() + 1).padStart(2, '0'),
+        yyyy: d.getFullYear()
+      });
+    }
 
     const montants = months.map(m =>
       list
-        .filter(c => (c.statut === 'payée' || c.statut === 'payé') && c.date_paiement?.startsWith(`${year}-${m.mm}`))
+        .filter(c => (c.statut === 'payée' || c.statut === 'payé') && c.date_paiement?.startsWith(`${m.yyyy}-${m.mm}`))
         .reduce((s, c) => s + Number(c.montant || 0), 0)
     );
 
@@ -1009,8 +1033,22 @@ async function loadCotisationsStats() {
         datasets: [{ label: 'FCFA', data: montants, backgroundColor: 'rgba(193,68,14,.75)', borderRadius: 6 }],
       },
       options: {
-        responsive: true, plugins: { legend: { display: false } },
-        scales: { y: { ticks: { callback: v => v >= 1e6 ? v/1e6+'M' : v >= 1000 ? v/1000+'k' : v } }, x: { grid: { display: false } } },
+        responsive: true, 
+        maintainAspectRatio: true,
+        plugins: { 
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: c => ' ' + Number(c.raw).toLocaleString('fr-FR') + ' FCFA'
+            }
+          }
+        },
+        scales: { 
+          y: { 
+            ticks: { callback: v => v >= 1e6 ? v/1e6+'M' : v >= 1000 ? v/1000+'k' : v } 
+          }, 
+          x: { grid: { display: false } } 
+        },
       },
     });
 
@@ -1028,6 +1066,8 @@ async function loadCotisationsStats() {
       },
       options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { padding: 12, font: { size: 11 } } } } },
     });
+
+    console.log(`Stats cotisations chargées: ${list.length} total, ${payees} payées`);
 
   } catch (err) { console.warn('Stats cotisations:', err.message); }
 }
