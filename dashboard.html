@@ -610,12 +610,12 @@
       <div class="section" id="section-historique">
         <div class="sec-head">
           <div class="sec-title">Historique des Activités</div>
-          <select class="form-control" style="width:auto;padding:6px 12px;font-size:.82rem">
-            <option>Toutes les actions</option>
-            <option>Inscriptions</option>
-            <option>Cotisations</option>
-            <option>Prêts</option>
-            <option>Sinistres</option>
+          <select id="historique-filter" class="form-control" style="width:auto;padding:6px 12px;font-size:.82rem" onchange="filterHistorique(this.value)">
+            <option value="">Toutes les actions</option>
+            <option value="inscription">Inscriptions</option>
+            <option value="cotisation">Cotisations</option>
+            <option value="pret">Prêts</option>
+            <option value="sinistre">Sinistres</option>
           </select>
         </div>
         <div class="tcard" style="padding:6px 20px">

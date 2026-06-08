@@ -104,6 +104,7 @@ const SECTION_LOADERS = {
   'prets-calcul':      calculateLoan,
   sinistres:           loadSinistres,
   alertes:             loadAlertes,
+  historique:          loadHistorique,
 };
 
 function showSection(name) {
@@ -1272,6 +1273,94 @@ function calculateLoan() {
   document.getElementById('res-interets').textContent   = fmt(interets);
   document.getElementById('res-total').textContent      = fmt(total);
   document.getElementById('res-cout').textContent       = (interets / M * 100).toFixed(1) + '%';
+}
+
+/* ==============================
+   HISTORIQUE — Charge les événements dynamiquement
+   ============================== */
+function loadHistorique() {
+  const activityList = document.querySelector('#section-historique .activity-list');
+  if (!activityList) return;
+
+  // Charger depuis l'API
+  apiCall('GET', '/historique', null, (data) => {
+    if (!data || !Array.isArray(data)) {
+      activityList.innerHTML = '<li><p style="padding:20px">Aucun historique disponible</p></li>';
+      return;
+    }
+
+    activityList.innerHTML = data
+      .slice(0, 100)
+      .map(event => {
+        const dateStr = event.date_action ? new Date(event.date_action).toLocaleDateString('fr-FR', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit'
+        }) + ' · ' + new Date(event.date_action).toLocaleTimeString('fr-FR', {
+          hour: '2-digit',
+          minute: '2-digit'
+        }) : 'Date inconnue';
+
+        return `
+          <li class="activity-item">
+            <div class="act-dot ${event.color}"><i class="fas ${event.icon}"></i></div>
+            <div class="act-body">
+              <div class="act-text">${event.message}</div>
+              <div class="act-time">${dateStr} · par Système</div>
+            </div>
+          </li>
+        `;
+      })
+      .join('');
+  }, (err) => {
+    console.error('Erreur chargement historique:', err);
+    activityList.innerHTML = '<li><p style="padding:20px">Erreur lors du chargement de l\'historique</p></li>';
+  });
+}
+
+/**
+ * Filtre l'historique par type
+ */
+function filterHistorique(type) {
+  const activityList = document.querySelector('#section-historique .activity-list');
+  if (!activityList) return;
+
+  // Si pas de filtre, charger tous les événements
+  const endpoint = type ? `/historique/${type}` : '/historique';
+
+  apiCall('GET', endpoint, null, (data) => {
+    if (!data || !Array.isArray(data)) {
+      activityList.innerHTML = '<li><p style="padding:20px">Aucun événement pour cette catégorie</p></li>';
+      return;
+    }
+
+    activityList.innerHTML = data
+      .slice(0, 100)
+      .map(event => {
+        const dateStr = event.date_action ? new Date(event.date_action).toLocaleDateString('fr-FR', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit'
+        }) + ' · ' + new Date(event.date_action).toLocaleTimeString('fr-FR', {
+          hour: '2-digit',
+          minute: '2-digit'
+        }) : 'Date inconnue';
+
+        return `
+          <li class="activity-item">
+            <div class="act-dot ${event.color}"><i class="fas ${event.icon}"></i></div>
+            <div class="act-body">
+              <div class="act-text">${event.message}</div>
+              <div class="act-time">${dateStr} · par Système</div>
+            </div>
+          </li>
+        `;
+      })
+      .join('');
+  }, (err) => {
+    console.error('Erreur filtrage historique:', err);
+    activityList.innerHTML = '<li><p style="padding:20px">Erreur lors du chargement des événements</p></li>';
+  });
 }
 
 /* ==============================

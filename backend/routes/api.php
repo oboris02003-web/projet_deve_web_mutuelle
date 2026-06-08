@@ -7,6 +7,7 @@ use App\Http\Controllers\CotisationController;
 use App\Http\Controllers\PretController;
 use App\Http\Controllers\SinistreController;
 use App\Http\Controllers\AlerteController;
+use App\Http\Controllers\HistoriqueController;
 use App\Http\Controllers\AdherentDashboardController;
 
 /* ====================================================================
@@ -106,6 +107,10 @@ Route::middleware('auth:api')->group(function () {
         // Alertes
         Route::get('/alertes',            [AlerteController::class, 'index']);
         Route::get('/alertes/statistics', [AlerteController::class, 'statistics']);
+
+        // Historique
+        Route::get('/historique',        [HistoriqueController::class, 'index']);
+        Route::get('/historique/{type}', [HistoriqueController::class, 'filter']);
 
         // Statistiques globales
         Route::get('/stats', function () {
