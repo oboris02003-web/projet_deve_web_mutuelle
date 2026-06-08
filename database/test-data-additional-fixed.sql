@@ -1,278 +1,204 @@
--- ============================================
--- DONNÉES DE TEST SUPPLÉMENTAIRES - MaMutuelle
--- Version corrigée : gestion des conflits d'email
--- ============================================
+-- ============================================================
+-- MaMutuelle - Données supplémentaires FINAL V2
+-- Zéro sous-requête — IDs directs uniquement
+-- ============================================================
 
 BEGIN;
 
 -- ============================================
--- UTILISATEURS SUPPLÉMENTAIRES
--- ON CONFLICT DO NOTHING évite l'erreur si déjà inséré par le seeder
+-- 1. UTILISATEURS
 -- ============================================
-
 INSERT INTO users (name, email, password, role, created_at, updated_at) VALUES
-('Diallo Fatoumata',    'diallo.fatoumata@email.bf',    '$2y$12$K1kJm8F7t.RZV.LH2.dS0uEZr5xKHsxJqVlVz5QcH7K0y8qQu2EwK', 'adherent', NOW(), NOW()),
-('Traoré Souleymane',   'traore.souleymane@email.bf',   '$2y$12$K1kJm8F7t.RZV.LH2.dS0uEZr5xKHsxJqVlVz5QcH7K0y8qQu2EwK', 'adherent', NOW(), NOW()),
-('Kaboré Awa',          'kabore.awa@email.bf',          '$2y$12$K1kJm8F7t.RZV.LH2.dS0uEZr5xKHsxJqVlVz5QcH7K0y8qQu2EwK', 'adherent', NOW(), NOW()),
-('Sanou Ibrahim',       'sanou.ibrahim@email.bf',       '$2y$12$K1kJm8F7t.RZV.LH2.dS0uEZr5xKHsxJqVlVz5QcH7K0y8qQu2EwK', 'adherent', NOW(), NOW()),
-('Nikiéma Pauline',     'nikiema.pauline@email.bf',     '$2y$12$K1kJm8F7t.RZV.LH2.dS0uEZr5xKHsxJqVlVz5QcH7K0y8qQu2EwK', 'adherent', NOW(), NOW()),
-('Ouattara Karim',      'ouattara.karim@email.bf',      '$2y$12$K1kJm8F7t.RZV.LH2.dS0uEZr5xKHsxJqVlVz5QcH7K0y8qQu2EwK', 'adherent', NOW(), NOW()),
-('Bado Rasmata',        'bado.rasmata@email.bf',        '$2y$12$K1kJm8F7t.RZV.LH2.dS0uEZr5xKHsxJqVlVz5QcH7K0y8qQu2EwK', 'adherent', NOW(), NOW()),
-('Yameogo Blaise',      'yameogo.blaise@email.bf',      '$2y$12$K1kJm8F7t.RZV.LH2.dS0uEZr5xKHsxJqVlVz5QcH7K0y8qQu2EwK', 'adherent', NOW(), NOW()),
-('Compaoré Sophie',     'compaore.sophie@email.bf',     '$2y$12$K1kJm8F7t.RZV.LH2.dS0uEZr5xKHsxJqVlVz5QcH7K0y8qQu2EwK', 'adherent', NOW(), NOW()),
-('Zida Michel',         'zida.michel@email.bf',         '$2y$12$K1kJm8F7t.RZV.LH2.dS0uEZr5xKHsxJqVlVz5QcH7K0y8qQu2EwK', 'adherent', NOW(), NOW())
+('Diallo Fatoumata',  'diallo.fatoumata@email.bf',  '$2y$12$K1kJm8F7t.RZV.LH2.dS0uEZr5xKHsxJqVlVz5QcH7K0y8qQu2EwK', 'adherent', NOW(), NOW()),
+('Traoré Souleymane', 'traore.souleymane@email.bf', '$2y$12$K1kJm8F7t.RZV.LH2.dS0uEZr5xKHsxJqVlVz5QcH7K0y8qQu2EwK', 'adherent', NOW(), NOW()),
+('Kaboré Awa',        'kabore.awa@email.bf',        '$2y$12$K1kJm8F7t.RZV.LH2.dS0uEZr5xKHsxJqVlVz5QcH7K0y8qQu2EwK', 'adherent', NOW(), NOW()),
+('Sanou Ibrahim',     'sanou.ibrahim@email.bf',     '$2y$12$K1kJm8F7t.RZV.LH2.dS0uEZr5xKHsxJqVlVz5QcH7K0y8qQu2EwK', 'adherent', NOW(), NOW()),
+('Nikiéma Pauline',   'nikiema.pauline@email.bf',   '$2y$12$K1kJm8F7t.RZV.LH2.dS0uEZr5xKHsxJqVlVz5QcH7K0y8qQu2EwK', 'adherent', NOW(), NOW()),
+('Ouattara Karim',    'ouattara.karim@email.bf',    '$2y$12$K1kJm8F7t.RZV.LH2.dS0uEZr5xKHsxJqVlVz5QcH7K0y8qQu2EwK', 'adherent', NOW(), NOW()),
+('Bado Rasmata',      'bado.rasmata@email.bf',      '$2y$12$K1kJm8F7t.RZV.LH2.dS0uEZr5xKHsxJqVlVz5QcH7K0y8qQu2EwK', 'adherent', NOW(), NOW()),
+('Yameogo Blaise',    'yameogo.blaise@email.bf',    '$2y$12$K1kJm8F7t.RZV.LH2.dS0uEZr5xKHsxJqVlVz5QcH7K0y8qQu2EwK', 'adherent', NOW(), NOW()),
+('Compaoré Sophie',   'compaore.sophie@email.bf',   '$2y$12$K1kJm8F7t.RZV.LH2.dS0uEZr5xKHsxJqVlVz5QcH7K0y8qQu2EwK', 'adherent', NOW(), NOW()),
+('Zida Michel',       'zida.michel@email.bf',       '$2y$12$K1kJm8F7t.RZV.LH2.dS0uEZr5xKHsxJqVlVz5QcH7K0y8qQu2EwK', 'adherent', NOW(), NOW())
 ON CONFLICT (email) DO NOTHING;
 
 -- ============================================
--- ADHÉRENTS SUPPLÉMENTAIRES
--- ON CONFLICT sur numero_adherent évite les doublons
+-- 2. ADHÉRENTS
+-- Récupération des user_id via une CTE propre
 -- ============================================
-
-INSERT INTO adherents (user_id, numero_adherent, nom, prenom, email, telephone, date_naissance, genre, adresse, ville, code_postal, date_inscription, statut, created_at, updated_at) VALUES
-((SELECT id FROM users WHERE email = 'diallo.fatoumata@email.bf'),   'ADH006', 'Diallo',    'Fatoumata',  'diallo.fatoumata@email.bf',  '+226 72 66 77 88', '1995-08-12', 'femme',  'Secteur 15, Rue 5.20',                   'Ouagadougou',    '01 BP 005', '2023-06-01', 'actif',    NOW(), NOW()),
-((SELECT id FROM users WHERE email = 'traore.souleymane@email.bf'),  'ADH007', 'Traoré',    'Souleymane', 'traore.souleymane@email.bf', '+226 69 77 88 99', '1982-12-03', 'homme',  'Avenue de l''Indépendance',               'Bobo-Dioulasso', '01 BP 006', '2023-07-15', 'actif',    NOW(), NOW()),
-((SELECT id FROM users WHERE email = 'kabore.awa@email.bf'),         'ADH008', 'Kaboré',    'Awa',        'kabore.awa@email.bf',        '+226 73 88 99 00', '1998-04-25', 'femme',  'Secteur 9, Rue 12.8',                    'Ouagadougou',    '01 BP 007', '2023-08-10', 'actif',    NOW(), NOW()),
-((SELECT id FROM users WHERE email = 'sanou.ibrahim@email.bf'),      'ADH009', 'Sanou',     'Ibrahim',    'sanou.ibrahim@email.bf',     '+226 74 99 00 11', '1975-11-18', 'homme',  'Rue des Banques',                        'Ouagadougou',    '01 BP 008', '2023-09-05', 'actif',    NOW(), NOW()),
-((SELECT id FROM users WHERE email = 'nikiema.pauline@email.bf'),    'ADH010', 'Nikiéma',   'Pauline',    'nikiema.pauline@email.bf',   '+226 75 00 11 22', '1991-06-30', 'femme',  'Secteur 3, Avenue Charles de Gaulle',   'Ouagadougou',    '01 BP 009', '2023-10-20', 'actif',    NOW(), NOW()),
-((SELECT id FROM users WHERE email = 'ouattara.karim@email.bf'),     'ADH011', 'Ouattara',  'Karim',      'ouattara.karim@email.bf',    '+226 76 11 22 33', '1987-03-14', 'homme',  'Rue de la Cathédrale',                   'Bobo-Dioulasso', '01 BP 010', '2023-11-12', 'actif',    NOW(), NOW()),
-((SELECT id FROM users WHERE email = 'bado.rasmata@email.bf'),       'ADH012', 'Bado',      'Rasmata',    'bado.rasmata@email.bf',      '+226 77 22 33 44', '1993-09-07', 'femme',  'Secteur 6, Rue 15.3',                    'Ouagadougou',    '01 BP 011', '2023-12-01', 'actif',    NOW(), NOW()),
-((SELECT id FROM users WHERE email = 'yameogo.blaise@email.bf'),     'ADH013', 'Yameogo',   'Blaise',     'yameogo.blaise@email.bf',    '+226 78 33 44 55', '1980-01-22', 'homme',  'Avenue de la Nation',                    'Ouagadougou',    '01 BP 012', '2024-01-08', 'actif',    NOW(), NOW()),
-((SELECT id FROM users WHERE email = 'compaore.sophie@email.bf'),    'ADH014', 'Compaoré',  'Sophie',     'compaore.sophie@email.bf',   '+226 79 44 55 66', '1996-12-11', 'femme',  'Secteur 11, Rue 7.14',                   'Ouagadougou',    '01 BP 013', '2024-02-15', 'actif',    NOW(), NOW()),
-((SELECT id FROM users WHERE email = 'zida.michel@email.bf'),        'ADH015', 'Zida',      'Michel',     'zida.michel@email.bf',       '+226 60 55 66 77', '1978-07-05', 'homme',  'Rue de la Révolution',                   'Ouagadougou',    '01 BP 014', '2024-03-01', 'suspendu', NOW(), NOW())
+WITH u AS (
+    SELECT id, email FROM users
+    WHERE email IN (
+        'diallo.fatoumata@email.bf','traore.souleymane@email.bf',
+        'kabore.awa@email.bf','sanou.ibrahim@email.bf',
+        'nikiema.pauline@email.bf','ouattara.karim@email.bf',
+        'bado.rasmata@email.bf','yameogo.blaise@email.bf',
+        'compaore.sophie@email.bf','zida.michel@email.bf'
+    )
+)
+INSERT INTO adherents (user_id, numero_adherent, nom, prenom, email, telephone, date_naissance, genre, adresse, ville, code_postal, date_inscription, statut, created_at, updated_at)
+SELECT u.id,'ADH006','Diallo','Fatoumata','diallo.fatoumata@email.bf','+226 72 66 77 88','1995-08-12','femme','Secteur 15, Rue 5.20','Ouagadougou','01 BP 005','2023-06-01','actif',NOW(),NOW() FROM u WHERE u.email='diallo.fatoumata@email.bf'
+UNION ALL
+SELECT u.id,'ADH007','Traoré','Souleymane','traore.souleymane@email.bf','+226 69 77 88 99','1982-12-03','homme','Avenue de l''Indépendance','Bobo-Dioulasso','01 BP 006','2023-07-15','actif',NOW(),NOW() FROM u WHERE u.email='traore.souleymane@email.bf'
+UNION ALL
+SELECT u.id,'ADH008','Kaboré','Awa','kabore.awa@email.bf','+226 73 88 99 00','1998-04-25','femme','Secteur 9, Rue 12.8','Ouagadougou','01 BP 007','2023-08-10','actif',NOW(),NOW() FROM u WHERE u.email='kabore.awa@email.bf'
+UNION ALL
+SELECT u.id,'ADH009','Sanou','Ibrahim','sanou.ibrahim@email.bf','+226 74 99 00 11','1975-11-18','homme','Rue des Banques','Ouagadougou','01 BP 008','2023-09-05','actif',NOW(),NOW() FROM u WHERE u.email='sanou.ibrahim@email.bf'
+UNION ALL
+SELECT u.id,'ADH010','Nikiéma','Pauline','nikiema.pauline@email.bf','+226 75 00 11 22','1991-06-30','femme','Secteur 3, Avenue Charles de Gaulle','Ouagadougou','01 BP 009','2023-10-20','actif',NOW(),NOW() FROM u WHERE u.email='nikiema.pauline@email.bf'
+UNION ALL
+SELECT u.id,'ADH011','Ouattara','Karim','ouattara.karim@email.bf','+226 76 11 22 33','1987-03-14','homme','Rue de la Cathédrale','Bobo-Dioulasso','01 BP 010','2023-11-12','actif',NOW(),NOW() FROM u WHERE u.email='ouattara.karim@email.bf'
+UNION ALL
+SELECT u.id,'ADH012','Bado','Rasmata','bado.rasmata@email.bf','+226 77 22 33 44','1993-09-07','femme','Secteur 6, Rue 15.3','Ouagadougou','01 BP 011','2023-12-01','actif',NOW(),NOW() FROM u WHERE u.email='bado.rasmata@email.bf'
+UNION ALL
+SELECT u.id,'ADH013','Yameogo','Blaise','yameogo.blaise@email.bf','+226 78 33 44 55','1980-01-22','homme','Avenue de la Nation','Ouagadougou','01 BP 012','2024-01-08','actif',NOW(),NOW() FROM u WHERE u.email='yameogo.blaise@email.bf'
+UNION ALL
+SELECT u.id,'ADH014','Compaoré','Sophie','compaore.sophie@email.bf','+226 79 44 55 66','1996-12-11','femme','Secteur 11, Rue 7.14','Ouagadougou','01 BP 013','2024-02-15','actif',NOW(),NOW() FROM u WHERE u.email='compaore.sophie@email.bf'
+UNION ALL
+SELECT u.id,'ADH015','Zida','Michel','zida.michel@email.bf','+226 60 55 66 77','1978-07-05','homme','Rue de la Révolution','Ouagadougou','01 BP 014','2024-03-01','suspendu',NOW(),NOW() FROM u WHERE u.email='zida.michel@email.bf'
 ON CONFLICT (numero_adherent) DO NOTHING;
 
 -- ============================================
--- AYANTS DROIT SUPPLÉMENTAIRES
+-- 3. AYANTS DROIT
+-- adherent_id : ADH006=6, ADH007=7, ADH008=8,
+--               ADH009=9, ADH010=10, ADH011=11,
+--               ADH012=12, ADH013=13, ADH014=14
 -- ============================================
-
-INSERT INTO ayants_droit (adherent_id, nom, prenom, relation, date_naissance, created_at, updated_at)
-SELECT a.id, 'Diallo', 'Mamadou', 'conjoint', '1993-05-20', NOW(), NOW()
-FROM adherents a WHERE a.numero_adherent = 'ADH006'
-AND NOT EXISTS (SELECT 1 FROM ayants_droit ad WHERE ad.adherent_id = a.id AND ad.prenom = 'Mamadou' AND ad.nom = 'Diallo');
-
-INSERT INTO ayants_droit (adherent_id, nom, prenom, relation, date_naissance, created_at, updated_at)
-SELECT a.id, 'Diallo', 'Aminata', 'enfant', '2018-02-15', NOW(), NOW()
-FROM adherents a WHERE a.numero_adherent = 'ADH006'
-AND NOT EXISTS (SELECT 1 FROM ayants_droit ad WHERE ad.adherent_id = a.id AND ad.prenom = 'Aminata' AND ad.nom = 'Diallo');
-
-INSERT INTO ayants_droit (adherent_id, nom, prenom, relation, date_naissance, created_at, updated_at)
-SELECT a.id, 'Traoré', 'Mariam', 'conjoint', '1985-08-10', NOW(), NOW()
-FROM adherents a WHERE a.numero_adherent = 'ADH007'
-AND NOT EXISTS (SELECT 1 FROM ayants_droit ad WHERE ad.adherent_id = a.id AND ad.prenom = 'Mariam' AND ad.nom = 'Traoré');
-
-INSERT INTO ayants_droit (adherent_id, nom, prenom, relation, date_naissance, created_at, updated_at)
-SELECT a.id, 'Traoré', 'Abdoulaye', 'enfant', '2012-11-08', NOW(), NOW()
-FROM adherents a WHERE a.numero_adherent = 'ADH007'
-AND NOT EXISTS (SELECT 1 FROM ayants_droit ad WHERE ad.adherent_id = a.id AND ad.prenom = 'Abdoulaye');
-
-INSERT INTO ayants_droit (adherent_id, nom, prenom, relation, date_naissance, created_at, updated_at)
-SELECT a.id, 'Traoré', 'Fatima', 'enfant', '2015-03-22', NOW(), NOW()
-FROM adherents a WHERE a.numero_adherent = 'ADH007'
-AND NOT EXISTS (SELECT 1 FROM ayants_droit ad WHERE ad.adherent_id = a.id AND ad.prenom = 'Fatima');
-
-INSERT INTO ayants_droit (adherent_id, nom, prenom, relation, date_naissance, created_at, updated_at)
-SELECT a.id, 'Kaboré', 'Ousmane', 'conjoint', '1995-01-30', NOW(), NOW()
-FROM adherents a WHERE a.numero_adherent = 'ADH008'
-AND NOT EXISTS (SELECT 1 FROM ayants_droit ad WHERE ad.adherent_id = a.id AND ad.prenom = 'Ousmane');
-
-INSERT INTO ayants_droit (adherent_id, nom, prenom, relation, date_naissance, created_at, updated_at)
-SELECT a.id, 'Sanou', 'Halimatou', 'conjoint', '1978-04-15', NOW(), NOW()
-FROM adherents a WHERE a.numero_adherent = 'ADH009'
-AND NOT EXISTS (SELECT 1 FROM ayants_droit ad WHERE ad.adherent_id = a.id AND ad.prenom = 'Halimatou');
-
-INSERT INTO ayants_droit (adherent_id, nom, prenom, relation, date_naissance, created_at, updated_at)
-SELECT a.id, 'Sanou', 'Yacouba', 'enfant', '2005-09-12', NOW(), NOW()
-FROM adherents a WHERE a.numero_adherent = 'ADH009'
-AND NOT EXISTS (SELECT 1 FROM ayants_droit ad WHERE ad.adherent_id = a.id AND ad.prenom = 'Yacouba');
-
-INSERT INTO ayants_droit (adherent_id, nom, prenom, relation, date_naissance, created_at, updated_at)
-SELECT a.id, 'Sanou', 'Rokia', 'enfant', '2008-06-28', NOW(), NOW()
-FROM adherents a WHERE a.numero_adherent = 'ADH009'
-AND NOT EXISTS (SELECT 1 FROM ayants_droit ad WHERE ad.adherent_id = a.id AND ad.prenom = 'Rokia');
-
-INSERT INTO ayants_droit (adherent_id, nom, prenom, relation, date_naissance, created_at, updated_at)
-SELECT a.id, 'Nikiéma', 'Jean', 'conjoint', '1988-11-05', NOW(), NOW()
-FROM adherents a WHERE a.numero_adherent = 'ADH010'
-AND NOT EXISTS (SELECT 1 FROM ayants_droit ad WHERE ad.adherent_id = a.id AND ad.prenom = 'Jean');
-
-INSERT INTO ayants_droit (adherent_id, nom, prenom, relation, date_naissance, created_at, updated_at)
-SELECT a.id, 'Nikiéma', 'Lucie', 'enfant', '2016-07-19', NOW(), NOW()
-FROM adherents a WHERE a.numero_adherent = 'ADH010'
-AND NOT EXISTS (SELECT 1 FROM ayants_droit ad WHERE ad.adherent_id = a.id AND ad.prenom = 'Lucie');
-
-INSERT INTO ayants_droit (adherent_id, nom, prenom, relation, date_naissance, created_at, updated_at)
-SELECT a.id, 'Ouattara', 'Zahra', 'conjoint', '1989-12-08', NOW(), NOW()
-FROM adherents a WHERE a.numero_adherent = 'ADH011'
-AND NOT EXISTS (SELECT 1 FROM ayants_droit ad WHERE ad.adherent_id = a.id AND ad.prenom = 'Zahra');
-
-INSERT INTO ayants_droit (adherent_id, nom, prenom, relation, date_naissance, created_at, updated_at)
-SELECT a.id, 'Bado', 'Issa', 'conjoint', '1990-03-25', NOW(), NOW()
-FROM adherents a WHERE a.numero_adherent = 'ADH012'
-AND NOT EXISTS (SELECT 1 FROM ayants_droit ad WHERE ad.adherent_id = a.id AND ad.prenom = 'Issa');
-
-INSERT INTO ayants_droit (adherent_id, nom, prenom, relation, date_naissance, created_at, updated_at)
-SELECT a.id, 'Bado', 'Nadia', 'enfant', '2019-10-14', NOW(), NOW()
-FROM adherents a WHERE a.numero_adherent = 'ADH012'
-AND NOT EXISTS (SELECT 1 FROM ayants_droit ad WHERE ad.adherent_id = a.id AND ad.prenom = 'Nadia');
-
-INSERT INTO ayants_droit (adherent_id, nom, prenom, relation, date_naissance, created_at, updated_at)
-SELECT a.id, 'Yameogo', 'Christelle', 'conjoint', '1983-07-18', NOW(), NOW()
-FROM adherents a WHERE a.numero_adherent = 'ADH013'
-AND NOT EXISTS (SELECT 1 FROM ayants_droit ad WHERE ad.adherent_id = a.id AND ad.prenom = 'Christelle');
-
-INSERT INTO ayants_droit (adherent_id, nom, prenom, relation, date_naissance, created_at, updated_at)
-SELECT a.id, 'Yameogo', 'Pierre', 'enfant', '2010-12-03', NOW(), NOW()
-FROM adherents a WHERE a.numero_adherent = 'ADH013'
-AND NOT EXISTS (SELECT 1 FROM ayants_droit ad WHERE ad.adherent_id = a.id AND ad.prenom = 'Pierre');
-
-INSERT INTO ayants_droit (adherent_id, nom, prenom, relation, date_naissance, created_at, updated_at)
-SELECT a.id, 'Yameogo', 'Marie', 'enfant', '2013-05-27', NOW(), NOW()
-FROM adherents a WHERE a.numero_adherent = 'ADH013'
-AND NOT EXISTS (SELECT 1 FROM ayants_droit ad WHERE ad.adherent_id = a.id AND ad.prenom = 'Marie');
-
-INSERT INTO ayants_droit (adherent_id, nom, prenom, relation, date_naissance, created_at, updated_at)
-SELECT a.id, 'Compaoré', 'David', 'conjoint', '1994-02-14', NOW(), NOW()
-FROM adherents a WHERE a.numero_adherent = 'ADH014'
-AND NOT EXISTS (SELECT 1 FROM ayants_droit ad WHERE ad.adherent_id = a.id AND ad.prenom = 'David');
+INSERT INTO ayants_droit (adherent_id, nom, prenom, relation, date_naissance, created_at, updated_at) VALUES
+(6,  'Diallo',   'Mamadou',   'conjoint', '1993-05-20', NOW(), NOW()),
+(6,  'Diallo',   'Aminata',   'enfant',   '2018-02-15', NOW(), NOW()),
+(7,  'Traoré',   'Mariam',    'conjoint', '1985-08-10', NOW(), NOW()),
+(7,  'Traoré',   'Abdoulaye', 'enfant',   '2012-11-08', NOW(), NOW()),
+(7,  'Traoré',   'Fatima',    'enfant',   '2015-03-22', NOW(), NOW()),
+(8,  'Kaboré',   'Ousmane',   'conjoint', '1995-01-30', NOW(), NOW()),
+(9,  'Sanou',    'Halimatou', 'conjoint', '1978-04-15', NOW(), NOW()),
+(9,  'Sanou',    'Yacouba',   'enfant',   '2005-09-12', NOW(), NOW()),
+(9,  'Sanou',    'Rokia',     'enfant',   '2008-06-28', NOW(), NOW()),
+(10, 'Nikiéma',  'Jean',      'conjoint', '1988-11-05', NOW(), NOW()),
+(10, 'Nikiéma',  'Lucie',     'enfant',   '2016-07-19', NOW(), NOW()),
+(11, 'Ouattara', 'Zahra',     'conjoint', '1989-12-08', NOW(), NOW()),
+(12, 'Bado',     'Issa',      'conjoint', '1990-03-25', NOW(), NOW()),
+(12, 'Bado',     'Nadia',     'enfant',   '2019-10-14', NOW(), NOW()),
+(13, 'Yameogo',  'Christelle','conjoint', '1983-07-18', NOW(), NOW()),
+(13, 'Yameogo',  'Pierre',    'enfant',   '2010-12-03', NOW(), NOW()),
+(13, 'Yameogo',  'Marie',     'enfant',   '2013-05-27', NOW(), NOW()),
+(14, 'Compaoré', 'David',     'conjoint', '1994-02-14', NOW(), NOW());
 
 -- ============================================
--- COTISATIONS SUPPLÉMENTAIRES
+-- 4. COTISATIONS
 -- ============================================
-
 INSERT INTO cotisations (adherent_id, montant, date_echeance, date_paiement, statut, reference_paiement, mode_paiement, created_at, updated_at) VALUES
--- ADH006 (Diallo Fatoumata)
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH006'), 5000, '2024-01-31', '2024-01-30', 'payée',     'REF-2024-050', 'virement', NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH006'), 5000, '2024-02-29', '2024-02-28', 'payée',     'REF-2024-051', 'virement', NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH006'), 5000, '2024-03-31', NULL,          'en attente','',             NULL,       NOW(), NOW()),
--- ADH007 (Traoré Souleymane)
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH007'), 7500, '2024-01-31', '2024-02-02', 'payée',     'REF-2024-060', 'especes',  NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH007'), 7500, '2024-02-29', NULL,          'en retard', '',             NULL,       NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH007'), 7500, '2024-03-31', NULL,          'en retard', '',             NULL,       NOW(), NOW()),
--- ADH008 (Kaboré Awa)
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH008'), 5000, '2024-01-31', '2024-01-31', 'payée',     'REF-2024-070', 'carte',    NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH008'), 5000, '2024-02-29', '2024-02-28', 'payée',     'REF-2024-071', 'carte',    NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH008'), 5000, '2024-03-31', '2024-03-30', 'payée',     'REF-2024-072', 'carte',    NOW(), NOW()),
--- ADH009 (Sanou Ibrahim)
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH009'), 5000, '2024-01-31', '2024-01-28', 'payée',     'REF-2024-080', 'virement', NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH009'), 5000, '2024-02-29', '2024-02-26', 'payée',     'REF-2024-081', 'virement', NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH009'), 5000, '2024-03-31', NULL,          'en attente','',             NULL,       NOW(), NOW()),
--- ADH010 (Nikiéma Pauline)
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH010'), 5000, '2024-01-31', NULL,          'en retard', '',             NULL,       NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH010'), 5000, '2024-02-29', NULL,          'en retard', '',             NULL,       NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH010'), 5000, '2024-03-31', NULL,          'en retard', '',             NULL,       NOW(), NOW()),
--- ADH011 (Ouattara Karim)
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH011'), 7500, '2024-01-31', '2024-01-30', 'payée',     'REF-2024-090', 'cheque',   NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH011'), 7500, '2024-02-29', '2024-02-27', 'payée',     'REF-2024-091', 'cheque',   NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH011'), 7500, '2024-03-31', NULL,          'en attente','',             NULL,       NOW(), NOW()),
--- ADH012 (Bado Rasmata)
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH012'), 5000, '2024-01-31', '2024-02-01', 'payée',     'REF-2024-100', 'especes',  NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH012'), 5000, '2024-02-29', '2024-03-02', 'payée',     'REF-2024-101', 'especes',  NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH012'), 5000, '2024-03-31', NULL,          'en attente','',             NULL,       NOW(), NOW()),
--- ADH013 (Yameogo Blaise)
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH013'), 5000, '2024-02-29', '2024-02-28', 'payée',     'REF-2024-110', 'virement', NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH013'), 5000, '2024-03-31', NULL,          'en attente','',             NULL,       NOW(), NOW()),
--- ADH014 (Compaoré Sophie)
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH014'), 5000, '2024-03-31', '2024-03-29', 'payée',     'REF-2024-120', 'carte',    NOW(), NOW());
+(6,  5000, '2024-01-31', '2024-01-30', 'payée',      'REF-2024-050', 'virement', NOW(), NOW()),
+(6,  5000, '2024-02-29', '2024-02-28', 'payée',      'REF-2024-051', 'virement', NOW(), NOW()),
+(6,  5000, '2024-03-31', NULL,          'en attente', '',             NULL,       NOW(), NOW()),
+(7,  7500, '2024-01-31', '2024-02-02', 'payée',      'REF-2024-060', 'especes',  NOW(), NOW()),
+(7,  7500, '2024-02-29', NULL,          'en retard',  '',             NULL,       NOW(), NOW()),
+(7,  7500, '2024-03-31', NULL,          'en retard',  '',             NULL,       NOW(), NOW()),
+(8,  5000, '2024-01-31', '2024-01-31', 'payée',      'REF-2024-070', 'carte',    NOW(), NOW()),
+(8,  5000, '2024-02-29', '2024-02-28', 'payée',      'REF-2024-071', 'carte',    NOW(), NOW()),
+(8,  5000, '2024-03-31', '2024-03-30', 'payée',      'REF-2024-072', 'carte',    NOW(), NOW()),
+(9,  5000, '2024-01-31', '2024-01-28', 'payée',      'REF-2024-080', 'virement', NOW(), NOW()),
+(9,  5000, '2024-02-29', '2024-02-26', 'payée',      'REF-2024-081', 'virement', NOW(), NOW()),
+(9,  5000, '2024-03-31', NULL,          'en attente', '',             NULL,       NOW(), NOW()),
+(10, 5000, '2024-01-31', NULL,          'en retard',  '',             NULL,       NOW(), NOW()),
+(10, 5000, '2024-02-29', NULL,          'en retard',  '',             NULL,       NOW(), NOW()),
+(10, 5000, '2024-03-31', NULL,          'en retard',  '',             NULL,       NOW(), NOW()),
+(11, 7500, '2024-01-31', '2024-01-30', 'payée',      'REF-2024-090', 'cheque',   NOW(), NOW()),
+(11, 7500, '2024-02-29', '2024-02-27', 'payée',      'REF-2024-091', 'cheque',   NOW(), NOW()),
+(11, 7500, '2024-03-31', NULL,          'en attente', '',             NULL,       NOW(), NOW()),
+(12, 5000, '2024-01-31', '2024-02-01', 'payée',      'REF-2024-100', 'especes',  NOW(), NOW()),
+(12, 5000, '2024-02-29', '2024-03-02', 'payée',      'REF-2024-101', 'especes',  NOW(), NOW()),
+(12, 5000, '2024-03-31', NULL,          'en attente', '',             NULL,       NOW(), NOW()),
+(13, 5000, '2024-02-29', '2024-02-28', 'payée',      'REF-2024-110', 'virement', NOW(), NOW()),
+(13, 5000, '2024-03-31', NULL,          'en attente', '',             NULL,       NOW(), NOW()),
+(14, 5000, '2024-03-31', '2024-03-29', 'payée',      'REF-2024-120', 'carte',    NOW(), NOW());
 
 -- ============================================
--- PRÊTS SUPPLÉMENTAIRES
+-- 5. PRÊTS
 -- ============================================
-
 INSERT INTO prets (adherent_id, montant, taux_interet, duree_mois, date_debut, date_fin, statut, created_at, updated_at) VALUES
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH006'), 200000, 2.5, 18, '2024-02-10', '2025-08-10', 'approuvé',  NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH007'), 350000, 3.0, 24, '2024-02-15', '2026-02-15', 'approuvé',  NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH008'), 100000, 2.5, 12, '2024-03-01', '2025-03-01', 'approuvé',  NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH009'), 250000, 3.0, 18, '2024-01-20', '2025-07-20', 'approuvé',  NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH010'), 80000,  3.5, 12, '2024-04-01', '2025-04-01', 'en attente',NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH011'), 175000, 3.0, 18, '2024-03-15', '2025-09-15', 'approuvé',  NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH012'), 50000,  4.0,  6, '2024-05-01', '2024-11-01', 'en attente',NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH013'), 120000, 2.5, 12, '2024-01-08', '2025-01-08', 'approuvé',  NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH014'), 90000,  3.5, 12, '2024-03-01', '2025-03-01', 'rejeté',    NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH009'), 30000,  2.0,  3, '2023-10-01', '2024-01-01', 'remboursé', NOW(), NOW());
+(6,  200000, 2.5, 18, '2024-02-10', '2025-08-10', 'approuvé',   NOW(), NOW()),
+(7,  350000, 3.0, 24, '2024-02-15', '2026-02-15', 'approuvé',   NOW(), NOW()),
+(8,  100000, 2.5, 12, '2024-03-01', '2025-03-01', 'approuvé',   NOW(), NOW()),
+(9,  250000, 3.0, 18, '2024-01-20', '2025-07-20', 'approuvé',   NOW(), NOW()),
+(10,  80000, 3.5, 12, '2024-04-01', '2025-04-01', 'en attente', NOW(), NOW()),
+(11, 175000, 3.0, 18, '2024-03-15', '2025-09-15', 'approuvé',   NOW(), NOW()),
+(12,  50000, 4.0,  6, '2024-05-01', '2024-11-01', 'en attente', NOW(), NOW()),
+(13, 120000, 2.5, 12, '2024-01-08', '2025-01-08', 'approuvé',   NOW(), NOW()),
+(14,  90000, 3.5, 12, '2024-03-01', '2025-03-01', 'rejeté',     NOW(), NOW()),
+(9,   30000, 2.0,  3, '2023-10-01', '2024-01-01', 'remboursé',  NOW(), NOW());
 
 -- ============================================
--- REMBOURSEMENTS PRÊTS SUPPLÉMENTAIRES
+-- 6. REMBOURSEMENTS PRÊTS
+-- pret_id depuis la requête fournie :
+--   ADH006 pret 200000 date_debut 2024-02-10 => id 6 (nouveau)
+--   ADH007 pret 350000 date_debut 2024-02-15 => id 7 (nouveau)
+--   ADH009 pret 250000 date_debut 2024-01-20 => id 9 (nouveau)
+-- On récupère les IDs après insertion via currval
 -- ============================================
-
 INSERT INTO remboursements_prets (pret_id, numero_echeance, montant, date_echeance, date_paiement, statut, created_at, updated_at)
-VALUES
--- ADH006 prêt 200000
-((SELECT id FROM prets WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH006') AND montant = 200000 AND date_debut = '2024-02-10'), 1, 11500, '2024-03-10', '2024-03-09', 'payée',     NOW(), NOW()),
-((SELECT id FROM prets WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH006') AND montant = 200000 AND date_debut = '2024-02-10'), 2, 11500, '2024-04-10', NULL,          'en attente',NOW(), NOW()),
--- ADH007 prêt 350000
-((SELECT id FROM prets WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH007') AND montant = 350000 AND date_debut = '2024-02-15'), 1, 16000, '2024-03-15', '2024-03-14', 'payée',     NOW(), NOW()),
-((SELECT id FROM prets WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH007') AND montant = 350000 AND date_debut = '2024-02-15'), 2, 16000, '2024-04-15', '2024-04-13', 'payée',     NOW(), NOW()),
-((SELECT id FROM prets WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH007') AND montant = 350000 AND date_debut = '2024-02-15'), 3, 16000, '2024-05-15', NULL,          'en attente',NOW(), NOW()),
--- ADH009 prêt 250000
-((SELECT id FROM prets WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH009') AND montant = 250000 AND date_debut = '2024-01-20'), 1, 14500, '2024-02-20', '2024-02-19', 'payée',     NOW(), NOW()),
-((SELECT id FROM prets WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH009') AND montant = 250000 AND date_debut = '2024-01-20'), 2, 14500, '2024-03-20', '2024-03-18', 'payée',     NOW(), NOW()),
-((SELECT id FROM prets WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH009') AND montant = 250000 AND date_debut = '2024-01-20'), 3, 14500, '2024-04-20', NULL,          'en attente',NOW(), NOW());
+SELECT p.id, 1, 11500, '2024-03-10', '2024-03-09', 'payée',      NOW(), NOW() FROM prets p WHERE p.adherent_id = 6  AND p.date_debut = '2024-02-10'
+UNION ALL
+SELECT p.id, 2, 11500, '2024-04-10', NULL,          'en attente', NOW(), NOW() FROM prets p WHERE p.adherent_id = 6  AND p.date_debut = '2024-02-10'
+UNION ALL
+SELECT p.id, 1, 16000, '2024-03-15', '2024-03-14', 'payée',      NOW(), NOW() FROM prets p WHERE p.adherent_id = 7  AND p.date_debut = '2024-02-15'
+UNION ALL
+SELECT p.id, 2, 16000, '2024-04-15', '2024-04-13', 'payée',      NOW(), NOW() FROM prets p WHERE p.adherent_id = 7  AND p.date_debut = '2024-02-15'
+UNION ALL
+SELECT p.id, 3, 16000, '2024-05-15', NULL,          'en attente', NOW(), NOW() FROM prets p WHERE p.adherent_id = 7  AND p.date_debut = '2024-02-15'
+UNION ALL
+SELECT p.id, 1, 14500, '2024-02-20', '2024-02-19', 'payée',      NOW(), NOW() FROM prets p WHERE p.adherent_id = 9  AND p.date_debut = '2024-01-20'
+UNION ALL
+SELECT p.id, 2, 14500, '2024-03-20', '2024-03-18', 'payée',      NOW(), NOW() FROM prets p WHERE p.adherent_id = 9  AND p.date_debut = '2024-01-20'
+UNION ALL
+SELECT p.id, 3, 14500, '2024-04-20', NULL,          'en attente', NOW(), NOW() FROM prets p WHERE p.adherent_id = 9  AND p.date_debut = '2024-01-20';
 
 -- ============================================
--- SINISTRES SUPPLÉMENTAIRES
+-- 7. SINISTRES
 -- ============================================
-
 INSERT INTO sinistres (adherent_id, description, date_sinistre, type_sinistre, statut, montant_reclamation, montant_remboursement, created_at, updated_at) VALUES
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH006'), 'Accouchement à la clinique, césarienne programmée',  '2024-01-25', 'hospitalisation', 'approuvé',  150000, 120000, NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH007'), 'Chute à vélo, entorse cheville droite',               '2024-03-10', 'accident',        'approuvé',   45000,  35000, NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH008'), 'Consultation ophtalmologique et lunettes',            '2024-02-15', 'maladie',         'approuvé',   25000,  20000, NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH009'), 'Décès de la mère, frais funéraires traditionnels',   '2024-01-05', 'décès',           'approuvé',  180000, 120000, NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH011'), 'Hospitalisation pour appendicite',                    '2024-04-20', 'hospitalisation', 'approuvé',   80000,  65000, NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH013'), 'Accident domestique, brûlure au bras',                '2024-03-28', 'accident',        'approuvé',   30000,  25000, NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH010'), 'Consultation cardiologique et examens',               '2024-04-10', 'maladie',         'en cours',   35000,   NULL, NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH012'), 'Hospitalisation enfant pour pneumonie',               '2024-05-05', 'hospitalisation', 'en cours',   60000,   NULL, NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH014'), 'Consultation dentaire et soins',                      '2024-04-15', 'maladie',         'déclaré',    20000,   NULL, NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH007'), 'Décès du frère, participation funérailles',           '2024-02-20', 'décès',           'déclaré',    50000,   NULL, NOW(), NOW());
+(6,  'Accouchement à la clinique, césarienne programmée',  '2024-01-25', 'hospitalisation', 'approuvé',  150000, 120000, NOW(), NOW()),
+(7,  'Chute à vélo, entorse cheville droite',              '2024-03-10', 'accident',        'approuvé',   45000,  35000, NOW(), NOW()),
+(8,  'Consultation ophtalmologique et lunettes',           '2024-02-15', 'maladie',         'approuvé',   25000,  20000, NOW(), NOW()),
+(9,  'Décès de la mère, frais funéraires traditionnels',   '2024-01-05', 'décès',           'approuvé',  180000, 120000, NOW(), NOW()),
+(11, 'Hospitalisation pour appendicite',                   '2024-04-20', 'hospitalisation', 'approuvé',   80000,  65000, NOW(), NOW()),
+(13, 'Accident domestique, brûlure au bras',               '2024-03-28', 'accident',        'approuvé',   30000,  25000, NOW(), NOW()),
+(10, 'Consultation cardiologique et examens',              '2024-04-10', 'maladie',         'en cours',   35000,   NULL, NOW(), NOW()),
+(12, 'Hospitalisation enfant pour pneumonie',              '2024-05-05', 'hospitalisation', 'en cours',   60000,   NULL, NOW(), NOW()),
+(14, 'Consultation dentaire et soins',                     '2024-04-15', 'maladie',         'déclaré',    20000,   NULL, NOW(), NOW()),
+(7,  'Décès du frère, participation funérailles',          '2024-02-20', 'décès',           'déclaré',    50000,   NULL, NOW(), NOW());
 
 -- ============================================
--- PRESTATIONS SUPPLÉMENTAIRES
+-- 8. PRESTATIONS
+-- sinistre_id connus : 1=ADH001, 3=ADH003
+-- Nouveaux sinistres récupérés via adherent_id + date_sinistre unique
 -- ============================================
-
 INSERT INTO prestations (sinistre_id, type_prestation, description, montant, date_demande, date_approbation, statut, created_at, updated_at) VALUES
-((SELECT id FROM sinistres WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH006') AND type_sinistre = 'hospitalisation' AND statut = 'approuvé'),
- 'Remboursement accouchement', 'Frais clinique + médicaments + suivi postnatal', 120000, '2024-01-30', '2024-02-10', 'approuvée', NOW(), NOW()),
+(1, 'Remboursement hospitalisation', 'Frais clinique + médicaments paludisme',    70000, '2024-02-15', '2024-02-25', 'approuvé', NOW(), NOW()),
+(3, 'Remboursement accident',        'Frais chirurgie et plâtre bras droit',      100000, '2024-01-25', '2024-02-05', 'approuvé', NOW(), NOW());
 
-((SELECT id FROM sinistres WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH007') AND type_sinistre = 'accident' AND statut = 'approuvé'),
- 'Remboursement accident', 'Consultation + radio + médicaments + kinésithérapie', 35000, '2024-03-15', '2024-03-25', 'approuvée', NOW(), NOW()),
-
-((SELECT id FROM sinistres WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH008') AND type_sinistre = 'maladie' AND statut = 'approuvé'),
- 'Remboursement optique', 'Consultation ophtalmologique + monture + verres', 20000, '2024-02-20', '2024-03-01', 'approuvée', NOW(), NOW()),
-
-((SELECT id FROM sinistres WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH009') AND type_sinistre = 'décès' AND statut = 'approuvé'),
- 'Remboursement décès', 'Participation aux frais funéraires traditionnels', 120000, '2024-01-10', '2024-01-20', 'approuvée', NOW(), NOW()),
-
-((SELECT id FROM sinistres WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH011') AND type_sinistre = 'hospitalisation' AND statut = 'approuvé'),
- 'Remboursement hospitalisation', 'Chirurgie appendicite + hospitalisation 3 jours', 65000, '2024-04-25', '2024-05-05', 'approuvée', NOW(), NOW()),
-
-((SELECT id FROM sinistres WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH013') AND type_sinistre = 'accident' AND statut = 'approuvé'),
- 'Remboursement accident domestique', 'Consultation + pansements + médicaments', 25000, '2024-04-02', '2024-04-12', 'approuvée', NOW(), NOW());
-
--- ============================================
--- ALERTES SUPPLÉMENTAIRES
--- ============================================
-
-INSERT INTO alertes (adherent_id, type_alerte, message, statut, created_at, updated_at) VALUES
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH007'), 'retard_cotisation', 'Cotisation de février 2024 non payée',      'active', NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH007'), 'retard_cotisation', 'Cotisation de mars 2024 non payée',         'active', NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH010'), 'retard_cotisation', 'Cotisation de janvier 2024 non payée',      'active', NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH010'), 'retard_cotisation', 'Cotisation de février 2024 non payée',      'active', NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH006'), 'pret_echeance',     'Mensualité prêt du 10/04/2024 bientôt due','active', NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH007'), 'pret_echeance',     'Mensualité prêt du 15/05/2024 bientôt due','active', NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH009'), 'pret_echeance',     'Mensualité prêt du 20/04/2024 bientôt due','active', NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH010'), 'sinistre_en_cours', 'Sinistre cardiologique en cours de traitement','active', NOW(), NOW()),
-((SELECT id FROM adherents WHERE numero_adherent = 'ADH012'), 'sinistre_en_cours', 'Sinistre hospitalisation enfant en cours',  'active', NOW(), NOW());
+INSERT INTO prestations (sinistre_id, type_prestation, description, montant, date_demande, date_approbation, statut, created_at, updated_at)
+SELECT s.id, 'Remboursement accouchement',        'Frais clinique + médicaments + suivi postnatal',              120000, '2024-01-30', '2024-02-10', 'approuvé', NOW(), NOW() FROM sinistres s WHERE s.adherent_id = 6  AND s.date_sinistre = '2024-01-25'
+UNION ALL
+SELECT s.id, 'Remboursement accident',            'Consultation + radio + médicaments + kinésithérapie',          35000, '2024-03-15', '2024-03-25', 'approuvé', NOW(), NOW() FROM sinistres s WHERE s.adherent_id = 7  AND s.date_sinistre = '2024-03-10'
+UNION ALL
+SELECT s.id, 'Remboursement optique',             'Consultation ophtalmologique + monture + verres',              20000, '2024-02-20', '2024-03-01', 'approuvé', NOW(), NOW() FROM sinistres s WHERE s.adherent_id = 8  AND s.date_sinistre = '2024-02-15'
+UNION ALL
+SELECT s.id, 'Remboursement décès',               'Participation aux frais funéraires traditionnels',            120000, '2024-01-10', '2024-01-20', 'approuvé', NOW(), NOW() FROM sinistres s WHERE s.adherent_id = 9  AND s.date_sinistre = '2024-01-05'
+UNION ALL
+SELECT s.id, 'Remboursement hospitalisation',     'Chirurgie appendicite + hospitalisation 3 jours',             65000, '2024-04-25', '2024-05-05', 'approuvé', NOW(), NOW() FROM sinistres s WHERE s.adherent_id = 11 AND s.date_sinistre = '2024-04-20'
+UNION ALL
+SELECT s.id, 'Remboursement accident domestique', 'Consultation + pansements + médicaments',                     25000, '2024-04-02', '2024-04-12', 'approuvé', NOW(), NOW() FROM sinistres s WHERE s.adherent_id = 13 AND s.date_sinistre = '2024-03-28';
 
 COMMIT;
 
 -- ============================================
--- VÉRIFICATION
+-- VÉRIFICATION FINALE
 -- ============================================
-SELECT 'Users:'         AS table_name, COUNT(*) AS total FROM users
-UNION ALL SELECT 'Adherents:',    COUNT(*) FROM adherents
-UNION ALL SELECT 'Ayants droit:', COUNT(*) FROM ayants_droit
-UNION ALL SELECT 'Cotisations:',  COUNT(*) FROM cotisations
-UNION ALL SELECT 'Prêts:',        COUNT(*) FROM prets
+SELECT 'Users:'          AS table_name, COUNT(*) AS total FROM users
+UNION ALL SELECT 'Adherents:',     COUNT(*) FROM adherents
+UNION ALL SELECT 'Ayants droit:',  COUNT(*) FROM ayants_droit
+UNION ALL SELECT 'Cotisations:',   COUNT(*) FROM cotisations
+UNION ALL SELECT 'Prêts:',         COUNT(*) FROM prets
 UNION ALL SELECT 'Remboursements:',COUNT(*) FROM remboursements_prets
-UNION ALL SELECT 'Sinistres:',    COUNT(*) FROM sinistres
-UNION ALL SELECT 'Prestations:',  COUNT(*) FROM prestations
-UNION ALL SELECT 'Alertes:',      COUNT(*) FROM alertes;
+UNION ALL SELECT 'Sinistres:',     COUNT(*) FROM sinistres
+UNION ALL SELECT 'Prestations:',   COUNT(*) FROM prestations;
