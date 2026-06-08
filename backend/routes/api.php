@@ -9,6 +9,7 @@ use App\Http\Controllers\SinistreController;
 use App\Http\Controllers\AlerteController;
 use App\Http\Controllers\HistoriqueController;
 use App\Http\Controllers\AdherentDashboardController;
+use App\Http\Controllers\SeedController;
 
 /* ====================================================================
  * ROUTE PUBLIQUE — Santé de l'API
@@ -79,6 +80,9 @@ Route::middleware('auth:api')->group(function () {
      * Middleware CheckAdminOrAgent
      * ================================================================== */
     Route::middleware('App\Http\Middleware\CheckAdminOrAgent')->group(function () {
+
+        // ── Admin: Seeding de données de test ──
+        Route::post('/admin/seed-test-data', [SeedController::class, 'seedTestData']);
 
         // ── Exports (DOIT ÊTRE AVANT apiResource pour avoir la priorité) ──
         Route::get('/adherents/export',  [AdherentController::class, 'export']);
