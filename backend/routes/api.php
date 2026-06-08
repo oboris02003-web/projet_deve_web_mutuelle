@@ -79,6 +79,12 @@ Route::middleware('auth:api')->group(function () {
      * ================================================================== */
     Route::middleware('App\Http\Middleware\CheckAdminOrAgent')->group(function () {
 
+        // ── Exports (DOIT ÊTRE AVANT apiResource pour avoir la priorité) ──
+        Route::get('/adherents/export',  [AdherentController::class, 'export']);
+        Route::get('/cotisations/export', [CotisationController::class, 'export']);
+        Route::get('/prets/export',       [PretController::class, 'export']);
+        Route::get('/sinistres/export',   [SinistreController::class, 'export']);
+
         // CRUD complet adhérents
         Route::apiResource('adherents',   AdherentController::class);
 
@@ -110,12 +116,6 @@ Route::middleware('auth:api')->group(function () {
                 'sinistres_en_cours' => \App\Models\Sinistre::where('statut', 'en cours')->count(),
             ]);
         });
-
-        // Exports
-        Route::get('/adherents/export',  [AdherentController::class, 'export']);
-        Route::get('/cotisations/export', [CotisationController::class, 'export']);
-        Route::get('/prets/export',       [PretController::class, 'export']);
-        Route::get('/sinistres/export',   [SinistreController::class, 'export']);
     });
 
     
