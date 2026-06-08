@@ -73,11 +73,11 @@ class SinistreController extends Controller
             $data[] = [
                 $sinistre->id,
                 $sinistre->adherent ? $sinistre->adherent->nom . ' ' . $sinistre->adherent->prenom : '',
-                $sinistre->type,
+                $sinistre->type_sinistre,
                 $sinistre->description,
-                $sinistre->montant_reclame,
+                $sinistre->montant_reclamation,
                 $sinistre->statut,
-                $sinistre->date_declaration ? $sinistre->date_declaration->format('Y-m-d') : ''
+                $sinistre->date_sinistre ? $sinistre->date_sinistre->format('Y-m-d') : ''
             ];
         }
 
