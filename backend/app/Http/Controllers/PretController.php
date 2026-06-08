@@ -90,37 +90,52 @@ class PretController extends Controller
 
         if ($format === 'csv') {
             $csv = '';
+            // BOM pour UTF-8
+            $csv .= "\xEF\xBB\xBF";
             foreach ($data as $row) {
                 $csv .= implode(',', array_map(function($field) {
-                    return '"' . str_replace('"', '""', $field) . '"';
+                    return '"' . str_replace('"', '""', (string)$field) . '"';
                 }, $row)) . "\n";
             }
 
-            return response($csv)
-                ->header('Content-Type', 'text/csv')
-                ->header('Content-Disposition', 'attachment; filename="' . $filename . '.csv"');
+            return response($csv, 200)
+                ->header('Content-Type', 'text/csv; charset=utf-8')
+                ->header('Content-Disposition', 'attachment; filename="' . $filename . '.csv"')
+                ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+                ->header('Pragma', 'no-cache')
+                ->header('Expires', '0');
         }
 
         if ($format === 'xlsx' || $format === 'excel') {
             $csv = '';
             foreach ($data as $row) {
-                $csv .= implode("\t", $row) . "\n";
+                $csv .= implode("\t", array_map(function($field) {
+                    return (string)$field;
+                }, $row)) . "\n";
             }
 
-            return response($csv)
-                ->header('Content-Type', 'application/vnd.ms-excel')
-                ->header('Content-Disposition', 'attachment; filename="' . $filename . '.xls"');
+            return response($csv, 200)
+                ->header('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; charset=utf-8')
+                ->header('Content-Disposition', 'attachment; filename="' . $filename . '.xlsx"')
+                ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+                ->header('Pragma', 'no-cache')
+                ->header('Expires', '0');
         }
 
         if ($format === 'pdf') {
             $pdfContent = "Export des données - " . ucfirst($filename) . "\n\n";
             foreach ($data as $row) {
-                $pdfContent .= implode(' | ', $row) . "\n";
+                $pdfContent .= implode(' | ', array_map(function($field) {
+                    return (string)$field;
+                }, $row)) . "\n";
             }
 
-            return response($pdfContent)
-                ->header('Content-Type', 'application/pdf')
-                ->header('Content-Disposition', 'attachment; filename="' . $filename . '.pdf"');
+            return response($pdfContent, 200)
+                ->header('Content-Type', 'text/plain; charset=utf-8')
+                ->header('Content-Disposition', 'attachment; filename="' . $filename . '.txt"')
+                ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+                ->header('Pragma', 'no-cache')
+                ->header('Expires', '0');
         }
 
         return response()->json(['error' => 'Format non supporté'], 400);
