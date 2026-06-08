@@ -87,7 +87,7 @@ class PretController extends Controller
     private function generateExport($data, $filename, $format)
     {
         $filename = $filename . '_' . date('Y-m-d_H-i-s');
-
+        // Export fix v2
         if ($format === 'csv') {
             $csv = '';
             // BOM pour UTF-8
