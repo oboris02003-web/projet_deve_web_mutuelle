@@ -318,8 +318,8 @@ class DatabaseSeeder extends Seeder
         // 8. PRESTATIONS
         // ============================================================
         DB::table('prestations')->insert([
-            ['sinistre_id' => $sinId1, 'type_prestation' => 'Remboursement hospitalisation', 'description' => 'Frais clinique + médicaments paludisme', 'montant' => 70000,  'date_demande' => '2024-02-15', 'date_approbation' => '2024-02-25', 'statut' => 'approuvée', 'created_at' => now(), 'updated_at' => now()],
-            ['sinistre_id' => $sinId3, 'type_prestation' => 'Remboursement accident',        'description' => 'Frais chirurgie et plâtre bras droit',   'montant' => 100000, 'date_demande' => '2024-01-25', 'date_approbation' => '2024-02-05', 'statut' => 'approuvée', 'created_at' => now(), 'updated_at' => now()],
+            ['sinistre_id' => $sinId1, 'type_prestation' => 'Remboursement hospitalisation', 'description' => 'Frais clinique + médicaments paludisme', 'montant' => 70000,  'date_demande' => '2024-02-15', 'date_approbation' => '2024-02-25', 'statut' => 'approuvé', 'created_at' => now(), 'updated_at' => now()],
+            ['sinistre_id' => $sinId3, 'type_prestation' => 'Remboursement accident',        'description' => 'Frais chirurgie et plâtre bras droit',   'montant' => 100000, 'date_demande' => '2024-01-25', 'date_approbation' => '2024-02-05', 'statut' => 'approuvé', 'created_at' => now(), 'updated_at' => now()],
         ]);
 
         // ============================================================
