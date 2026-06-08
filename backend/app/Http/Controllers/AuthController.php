@@ -31,13 +31,26 @@ class AuthController extends Controller
             'role' => 'adherent', // Forcer le rôle adhérent pour l'inscription publique
         ]);
 
-        // Lier le user_id à l'adhérent existant
+        // Créer automatiquement l'adhérent lié à ce compte
         $adherent = \App\Models\Adherent::where('email', $request->email)
                                  ->whereNull('user_id')
                                  ->first();
-if ($adherent) {
-    $adherent->update(['user_id' => $user->id]);
-}
+        
+        if ($adherent) {
+            // Si un adhérent existe déjà pour cet email, le lier
+            $adherent->update(['user_id' => $user->id]);
+        } else {
+            // Sinon créer un nouvel adhérent
+            \App\Models\Adherent::create([
+                'user_id' => $user->id,
+                'nom' => explode(' ', $request->name)[0] ?? $request->name,
+                'prenom' => count(explode(' ', $request->name)) > 1 ? implode(' ', array_slice(explode(' ', $request->name), 1)) : '',
+                'email' => $request->email,
+                'numero_adherent' => 'ADH-' . time(),
+                'statut' => 'actif',
+                'date_inscription' => now(),
+            ]);
+        }
 
         $token = JWTAuth::fromUser($user);
 
