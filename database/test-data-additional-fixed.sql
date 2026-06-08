@@ -197,16 +197,16 @@ INSERT INTO prets (adherent_id, montant, taux_interet, duree_mois, date_debut, d
 INSERT INTO remboursements_prets (pret_id, numero_echeance, montant, date_echeance, date_paiement, statut, created_at, updated_at)
 VALUES
 -- ADH006 prêt 200000
-((SELECT id FROM prets WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH006') AND montant = 200000), 1, 11500, '2024-03-10', '2024-03-09', 'payée',     NOW(), NOW()),
-((SELECT id FROM prets WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH006') AND montant = 200000), 2, 11500, '2024-04-10', NULL,          'en attente',NOW(), NOW()),
+((SELECT id FROM prets WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH006') AND montant = 200000 AND date_debut = '2024-02-10'), 1, 11500, '2024-03-10', '2024-03-09', 'payée',     NOW(), NOW()),
+((SELECT id FROM prets WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH006') AND montant = 200000 AND date_debut = '2024-02-10'), 2, 11500, '2024-04-10', NULL,          'en attente',NOW(), NOW()),
 -- ADH007 prêt 350000
-((SELECT id FROM prets WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH007') AND montant = 350000), 1, 16000, '2024-03-15', '2024-03-14', 'payée',     NOW(), NOW()),
-((SELECT id FROM prets WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH007') AND montant = 350000), 2, 16000, '2024-04-15', '2024-04-13', 'payée',     NOW(), NOW()),
-((SELECT id FROM prets WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH007') AND montant = 350000), 3, 16000, '2024-05-15', NULL,          'en attente',NOW(), NOW()),
+((SELECT id FROM prets WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH007') AND montant = 350000 AND date_debut = '2024-02-15'), 1, 16000, '2024-03-15', '2024-03-14', 'payée',     NOW(), NOW()),
+((SELECT id FROM prets WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH007') AND montant = 350000 AND date_debut = '2024-02-15'), 2, 16000, '2024-04-15', '2024-04-13', 'payée',     NOW(), NOW()),
+((SELECT id FROM prets WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH007') AND montant = 350000 AND date_debut = '2024-02-15'), 3, 16000, '2024-05-15', NULL,          'en attente',NOW(), NOW()),
 -- ADH009 prêt 250000
-((SELECT id FROM prets WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH009') AND montant = 250000), 1, 14500, '2024-02-20', '2024-02-19', 'payée',     NOW(), NOW()),
-((SELECT id FROM prets WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH009') AND montant = 250000), 2, 14500, '2024-03-20', '2024-03-18', 'payée',     NOW(), NOW()),
-((SELECT id FROM prets WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH009') AND montant = 250000), 3, 14500, '2024-04-20', NULL,          'en attente',NOW(), NOW());
+((SELECT id FROM prets WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH009') AND montant = 250000 AND date_debut = '2024-01-20'), 1, 14500, '2024-02-20', '2024-02-19', 'payée',     NOW(), NOW()),
+((SELECT id FROM prets WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH009') AND montant = 250000 AND date_debut = '2024-01-20'), 2, 14500, '2024-03-20', '2024-03-18', 'payée',     NOW(), NOW()),
+((SELECT id FROM prets WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH009') AND montant = 250000 AND date_debut = '2024-01-20'), 3, 14500, '2024-04-20', NULL,          'en attente',NOW(), NOW());
 
 -- ============================================
 -- SINISTRES SUPPLÉMENTAIRES
