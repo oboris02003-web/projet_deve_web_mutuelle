@@ -194,7 +194,7 @@ INSERT INTO prets (adherent_id, montant, taux_interet, duree_mois, date_debut, d
 -- REMBOURSEMENTS PRÊTS SUPPLÉMENTAIRES
 -- ============================================
 
-INSERT INTO remboursements_prets (pret_id, numero_mensualite, montant, date_echeance, date_paiement, statut, created_at, updated_at)
+INSERT INTO remboursements_prets (pret_id, numero_echeance, montant, date_echeance, date_paiement, statut, created_at, updated_at)
 VALUES
 -- ADH006 prêt 200000
 ((SELECT id FROM prets WHERE adherent_id = (SELECT id FROM adherents WHERE numero_adherent = 'ADH006') AND montant = 200000), 1, 11500, '2024-03-10', '2024-03-09', 'payée',     NOW(), NOW()),
