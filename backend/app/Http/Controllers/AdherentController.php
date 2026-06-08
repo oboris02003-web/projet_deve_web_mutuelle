@@ -136,10 +136,10 @@ class AdherentController extends Controller
     public function export(Request $request)
     {
         $format = $request->query('format', 'csv');
-        $adherents = Adherent::with(['cotisations', 'prets', 'sinistres', 'ayantsDroit'])->get();
+        $adherents = Adherent::get();
 
         $data = [];
-        $data[] = ['Numéro Adhérent', 'Nom', 'Prénom', 'Email', 'Téléphone', 'Statut', 'Date Inscription', 'Nombre Ayants Droit'];
+        $data[] = ['Numéro Adhérent', 'Nom', 'Prénom', 'Email', 'Téléphone', 'Statut', 'Date Inscription'];
 
         foreach ($adherents as $adherent) {
             $data[] = [
@@ -149,8 +149,7 @@ class AdherentController extends Controller
                 $adherent->email,
                 $adherent->telephone,
                 $adherent->statut,
-                $adherent->date_inscription ? $adherent->date_inscription->format('Y-m-d') : '',
-                $adherent->ayantsDroit->count()
+                $adherent->date_inscription ? $adherent->date_inscription->format('Y-m-d') : ''
             ];
         }
 
