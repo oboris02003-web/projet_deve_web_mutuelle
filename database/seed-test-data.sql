@@ -15,6 +15,24 @@
 BEGIN;
 
 -- ================================================================
+-- 🧹 NETTOYER LES DONNÉES EXISTANTES (OPTIONAL - DÉCOMMENTER SI BESOIN)
+-- ================================================================
+-- DELETE FROM remboursement_prets;
+-- DELETE FROM prets;
+-- DELETE FROM sinistres;
+-- DELETE FROM ayant_droits;
+-- DELETE FROM cotisations;
+-- DELETE FROM adherents;
+-- 
+-- -- Réinitialiser les séquences
+-- ALTER SEQUENCE adherents_id_seq RESTART WITH 1;
+-- ALTER SEQUENCE cotisations_id_seq RESTART WITH 1;
+-- ALTER SEQUENCE prets_id_seq RESTART WITH 1;
+-- ALTER SEQUENCE sinistres_id_seq RESTART WITH 1;
+-- ALTER SEQUENCE ayant_droits_id_seq RESTART WITH 1;
+-- ALTER SEQUENCE remboursement_prets_id_seq RESTART WITH 1;
+
+-- ================================================================
 -- 1️⃣ CRÉER 20 ADHÉRENTS
 -- ================================================================
 
