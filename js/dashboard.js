@@ -841,7 +841,11 @@ async function saveAyantDroit() {
     }
     closeModal('modal-ayant-droit');
     delete form.dataset.editId;
-    form.reset();
+    // Réinitialiser le formulaire
+    inputs[0].value = '';
+    inputs[1].value = '';
+    inputs[2].value = '';
+    if (sels[0]) sels[0].value = 'autre';
     await loadAyantsDroitForAdherent(_selectedAdherentId);
   } catch (err) {
     toast('Erreur : ' + err.message, 'error');
@@ -860,9 +864,13 @@ async function saveAdherent() {
     prenom:          inputs[1]?.value?.trim(),
     email:           inputs[2]?.value?.trim(),
     telephone:       inputs[3]?.value?.trim(),
-    numero_adherent: inputs[4]?.value?.trim(),
     statut:          sel?.value,
   };
+
+  if (!body.nom || !body.email) {
+    if (errEl) errEl.textContent = 'Nom et email obligatoires';
+    return;
+  }
 
   try {
     const id = form.dataset.editId;
@@ -875,8 +883,16 @@ async function saveAdherent() {
     }
     closeModal('modal-adherent');
     delete form.dataset.editId;
-    document.getElementById('adherent-modal-title').textContent = 'Nouvel Adhérent';
+    // Réinitialiser le formulaire
+    inputs[0].value = '';
+    inputs[1].value = '';
+    inputs[2].value = '';
+    inputs[3].value = '';
+    if (sel) sel.value = 'Actif';
+    const titleEl = document.getElementById('adherent-modal-title');
+    if (titleEl) titleEl.textContent = 'Nouvel Adhérent';
     loadAdherents();
+    loadAdherentsSelect();
     buildSearchCache();
   } catch (err) {
     if (errEl) errEl.textContent = err.message;
@@ -968,18 +984,24 @@ async function loadCotisations() {
 
     if (!list.length) { showTableEmpty('cotisationsBody', 6, 'Aucune cotisation enregistrée'); return; }
 
-    tbody.innerHTML = list.map(c => `
-      <tr>
-        <td>${c.adherent?.nom || ''} ${c.adherent?.prenom || ''}</td>
-        <td>${fmtFCFA(c.montant)}</td>
-        <td>${fmtDate(c.date_echeance)}</td>
-        <td>${c.date_paiement ? fmtDate(c.date_paiement) : '—'}</td>
-        <td>${badgeStatut(c.statut)}</td>
-        <td>
-          <button class="icon-btn" onclick="openEditCotisation(${c.id})"><i class="fas fa-pen"></i></button>
-          <button class="icon-btn" style="margin-left:4px" onclick="deleteCotisation(${c.id})"><i class="fas fa-trash"></i></button>
-        </td>
-      </tr>`).join('');
+    tbody.innerHTML = list.map(c => {
+      if (!c.id) {
+        console.warn('Cotisation sans ID:', c);
+        return '';
+      }
+      return `
+        <tr>
+          <td>${c.adherent?.nom || ''} ${c.adherent?.prenom || ''}</td>
+          <td>${fmtFCFA(c.montant)}</td>
+          <td>${fmtDate(c.date_echeance)}</td>
+          <td>${c.date_paiement ? fmtDate(c.date_paiement) : '—'}</td>
+          <td>${badgeStatut(c.statut)}</td>
+          <td>
+            <button class="icon-btn" onclick="openEditCotisation(${c.id})" title="Modifier"><i class="fas fa-pen"></i></button>
+            <button class="icon-btn" style="margin-left:4px" onclick="deleteCotisation(${c.id})" title="Supprimer"><i class="fas fa-trash"></i></button>
+          </td>
+        </tr>`;
+    }).join('');
 
   } catch (err) {
     showTableError('cotisationsBody', 6, err.message);
@@ -996,6 +1018,11 @@ async function saveCotisation() {
 
   if (!adherent_id || !montant || !date_echeance) {
     toast('Veuillez remplir tous les champs obligatoires', 'error');
+    return;
+  }
+
+  if (isNaN(montant) || parseFloat(montant) <= 0) {
+    toast('Le montant doit être un nombre positif', 'error');
     return;
   }
 
@@ -1042,13 +1069,26 @@ async function saveSinistre() {
   const sels   = form.querySelectorAll('select');
   const inputs = form.querySelectorAll('input');
   const ta     = form.querySelector('textarea');
+  
+  const adherent_id = sels[0]?.value;
+  if (!adherent_id) {
+    toast('Veuillez sélectionner un adhérent', 'error');
+    return;
+  }
+
   const body   = {
-    adherent_id:   sels[0]?.value,
-    description:   ta?.value,
+    adherent_id:   adherent_id,
+    description:   ta?.value?.trim(),
     type:          sels[1]?.value,
     date_sinistre: inputs[0]?.value,
     statut:        sels[2]?.value,
   };
+
+  if (!body.type || !body.date_sinistre) {
+    toast('Veuillez remplir tous les champs obligatoires', 'error');
+    return;
+  }
+
   try {
     const id = form.dataset.editId;
     if (id) {
@@ -1060,15 +1100,39 @@ async function saveSinistre() {
     }
     closeModal('modal-sinistre');
     delete form.dataset.editId;
+    
+    // Réinitialiser le formulaire
+    if (sels[0]) sels[0].value = '';
+    if (ta) ta.value = '';
+    if (sels[1]) sels[1].value = 'maladie';
+    if (inputs[0]) inputs[0].value = '';
+    if (sels[2]) sels[2].value = 'déclaré';
+    
     loadSinistres();
-  } catch (err) { toast('Erreur : ' + err.message, 'error'); }
+  } catch (err) { 
+    console.error('Erreur saveSinistre:', err);
+    toast('Erreur : ' + err.message, 'error'); 
+  }
 }
 
 async function openEditCotisation(id) {
+  if (!id) { toast('ID invalide', 'error'); return; }
   try {
     const c      = await apiCall(`/cotisations/${id}`);
     const form   = document.getElementById('modal-cotisation');
-    document.getElementById('cotisation-adherent').value = c.adherent_id || '';
+    const selAdherent = document.getElementById('cotisation-adherent');
+    
+    // Vérifier que l'adhérent existe dans le select
+    const adherentId = c.adherent_id || (c.adherent?.id);
+    if (!selAdherent.querySelector(`option[value="${adherentId}"]`)) {
+      // Si l'option n'existe pas, on la crée
+      const opt = document.createElement('option');
+      opt.value = adherentId;
+      opt.textContent = `${c.adherent?.nom || ''} ${c.adherent?.prenom || ''}`.trim();
+      selAdherent.appendChild(opt);
+    }
+    
+    selAdherent.value = adherentId || '';
     document.getElementById('cotisation-montant').value = c.montant || '';
     document.getElementById('cotisation-echeance').value = c.date_echeance ? c.date_echeance.slice(0, 10) : '';
     document.getElementById('cotisation-mode').value = c.mode_paiement || '';
@@ -1082,6 +1146,7 @@ async function openEditCotisation(id) {
 }
 
 async function deleteCotisation(id) {
+  if (!id) { toast('ID invalide', 'error'); return; }
   confirmDelete('cette cotisation', async () => {
     try {
       await apiCall(`/cotisations/${id}`, { method: 'DELETE' });
@@ -1191,6 +1256,10 @@ async function loadPrets() {
     if (!list.length) { showTableEmpty('pretsBody', 7, 'Aucun prêt enregistré'); return; }
 
     tbody.innerHTML = list.map(p => {
+      if (!p.id) {
+        console.warn('Prêt sans ID:', p);
+        return '';
+      }
       const m = calcMensualite(p.montant, p.taux_interet, p.duree_mois);
       return `
         <tr>
@@ -1201,8 +1270,8 @@ async function loadPrets() {
           <td>${m ? fmtFCFA(Math.round(m)) : '—'}</td>
           <td>${badgeStatut(p.statut)}</td>
           <td>
-            <button class="icon-btn" onclick="openEditPret(${p.id})"><i class="fas fa-pen"></i></button>
-            <button class="icon-btn" style="margin-left:4px" onclick="deletePret(${p.id})"><i class="fas fa-trash"></i></button>
+            <button class="icon-btn" onclick="openEditPret(${p.id})" title="Modifier"><i class="fas fa-pen"></i></button>
+            <button class="icon-btn" style="margin-left:4px" onclick="deletePret(${p.id})" title="Supprimer"><i class="fas fa-trash"></i></button>
           </td>
         </tr>`;
     }).join('');
@@ -1217,14 +1286,34 @@ async function savePret() {
   const form   = document.getElementById('modal-pret');
   const sels   = form.querySelectorAll('select');
   const inputs = form.querySelectorAll('input');
+  
+  const adherent_id = sels[0]?.value;
+  if (!adherent_id) {
+    toast('Veuillez sélectionner un adhérent', 'error');
+    return;
+  }
+
+  const montant = inputs[0]?.value;
+  if (!montant || isNaN(montant) || parseFloat(montant) <= 0) {
+    toast('Le montant doit être un nombre positif', 'error');
+    return;
+  }
+
+  const duree = inputs[2]?.value;
+  if (!duree || isNaN(duree) || parseInt(duree) <= 0) {
+    toast('La durée doit être un nombre positif', 'error');
+    return;
+  }
+
   const body   = {
-    adherent_id:  sels[0]?.value,
-    montant:      inputs[0]?.value,
-    taux_interet: inputs[1]?.value,
-    duree_mois:   inputs[2]?.value,
+    adherent_id:  adherent_id,
+    montant:      parseFloat(montant),
+    taux_interet: parseFloat(inputs[1]?.value) || 0,
+    duree_mois:   parseInt(duree),
     date_debut:   inputs[3]?.value,
     statut:       sels[1]?.value,
   };
+
   try {
     const id = form.dataset.editId;
     if (id) {
@@ -1236,16 +1325,40 @@ async function savePret() {
     }
     closeModal('modal-pret');
     delete form.dataset.editId;
+    
+    // Réinitialiser le formulaire
+    if (sels[0]) sels[0].value = '';
+    if (inputs[0]) inputs[0].value = '';
+    if (inputs[1]) inputs[1].value = '5';
+    if (inputs[2]) inputs[2].value = '';
+    if (inputs[3]) inputs[3].value = '';
+    if (sels[1]) sels[1].value = 'en attente';
+    
     loadPrets();
-  } catch (err) { toast('Erreur : ' + err.message, 'error'); }
+  } catch (err) { 
+    console.error('Erreur savePret:', err);
+    toast('Erreur : ' + err.message, 'error'); 
+  }
 }
 
 async function openEditPret(id) {
+  if (!id) { toast('ID invalide', 'error'); return; }
   try {
     const p      = await apiCall(`/prets/${id}`);
     const form   = document.getElementById('modal-pret');
     const inputs = form.querySelectorAll('input');
     const sels   = form.querySelectorAll('select');
+    
+    // Vérifier que l'adhérent existe dans le select
+    const adherentId = p.adherent_id || (p.adherent?.id);
+    if (!sels[0].querySelector(`option[value="${adherentId}"]`)) {
+      const opt = document.createElement('option');
+      opt.value = adherentId;
+      opt.textContent = `${p.adherent?.nom || ''} ${p.adherent?.prenom || ''}`.trim();
+      sels[0].appendChild(opt);
+    }
+    
+    sels[0].value   = adherentId || '';
     inputs[0].value = p.montant      || '';
     inputs[1].value = p.taux_interet || '';
     inputs[2].value = p.duree_mois   || '';
@@ -1253,10 +1366,14 @@ async function openEditPret(id) {
     sels[1].value   = p.statut       || 'en attente';
     form.dataset.editId = id;
     openModal('modal-pret');
-  } catch (err) { toast('Erreur : ' + err.message, 'error'); }
+  } catch (err) { 
+    console.error('Erreur openEditPret:', err);
+    toast('Erreur : ' + err.message, 'error'); 
+  }
 }
 
 async function deletePret(id) {
+  if (!id) { toast('ID invalide', 'error'); return; }
   confirmDelete('ce prêt', async () => {
     try {
       await apiCall(`/prets/${id}`, { method: 'DELETE' });
@@ -1278,19 +1395,25 @@ async function loadSinistres() {
 
     if (!list.length) { showTableEmpty('sinistresBody', 7, 'Aucun sinistre déclaré'); return; }
 
-    tbody.innerHTML = list.map(s => `
-      <tr>
-        <td>${s.adherent?.nom || ''} ${s.adherent?.prenom || ''}</td>
-        <td><span class="badge b-indigo">${s.type || '—'}</span></td>
-        <td>${s.description || '—'}</td>
-        <td>${fmtDate(s.date_sinistre)}</td>
-        <td>${s.montant_reclame ? fmtFCFA(s.montant_reclame) : 'En évaluation'}</td>
-        <td>${badgeStatut(s.statut)}</td>
-        <td>
-          <button class="icon-btn" onclick="openEditSinistre(${s.id})"><i class="fas fa-pen"></i></button>
-          <button class="icon-btn" style="margin-left:4px" onclick="deleteSinistre(${s.id})"><i class="fas fa-trash"></i></button>
-        </td>
-      </tr>`).join('');
+    tbody.innerHTML = list.map(s => {
+      if (!s.id) {
+        console.warn('Sinistre sans ID:', s);
+        return '';
+      }
+      return `
+        <tr>
+          <td>${s.adherent?.nom || ''} ${s.adherent?.prenom || ''}</td>
+          <td><span class="badge b-indigo">${s.type || '—'}</span></td>
+          <td>${s.description || '—'}</td>
+          <td>${fmtDate(s.date_sinistre)}</td>
+          <td>${s.montant_reclame ? fmtFCFA(s.montant_reclame) : 'En évaluation'}</td>
+          <td>${badgeStatut(s.statut)}</td>
+          <td>
+            <button class="icon-btn" onclick="openEditSinistre(${s.id})" title="Modifier"><i class="fas fa-pen"></i></button>
+            <button class="icon-btn" style="margin-left:4px" onclick="deleteSinistre(${s.id})" title="Supprimer"><i class="fas fa-trash"></i></button>
+          </td>
+        </tr>`;
+    }).join('');
 
   } catch (err) {
     showTableError('sinistresBody', 7, err.message);
@@ -1299,22 +1422,38 @@ async function loadSinistres() {
 }
 
 async function openEditSinistre(id) {
+  if (!id) { toast('ID invalide', 'error'); return; }
   try {
     const s      = await apiCall(`/sinistres/${id}`);
     const form   = document.getElementById('modal-sinistre');
     const sels   = form.querySelectorAll('select');
     const inputs = form.querySelectorAll('input');
     const ta     = form.querySelector('textarea');
+    
+    // Vérifier que l'adhérent existe dans le select
+    const adherentId = s.adherent_id || (s.adherent?.id);
+    if (!sels[0].querySelector(`option[value="${adherentId}"]`)) {
+      const opt = document.createElement('option');
+      opt.value = adherentId;
+      opt.textContent = `${s.adherent?.nom || ''} ${s.adherent?.prenom || ''}`.trim();
+      sels[0].appendChild(opt);
+    }
+    
+    sels[0].value   = adherentId || '';
     if (ta) ta.value = s.description || '';
     inputs[0].value = s.date_sinistre ? s.date_sinistre.slice(0, 10) : '';
-    sels[1].value   = s.type   || 'Maladie';
+    sels[1].value   = s.type   || 'maladie';
     sels[2].value   = s.statut || 'déclaré';
     form.dataset.editId = id;
     openModal('modal-sinistre');
-  } catch (err) { toast('Erreur : ' + err.message, 'error'); }
+  } catch (err) { 
+    console.error('Erreur openEditSinistre:', err);
+    toast('Erreur : ' + err.message, 'error'); 
+  }
 }
 
 async function deleteSinistre(id) {
+  if (!id) { toast('ID invalide', 'error'); return; }
   confirmDelete('ce sinistre', async () => {
     try {
       await apiCall(`/sinistres/${id}`, { method: 'DELETE' });
