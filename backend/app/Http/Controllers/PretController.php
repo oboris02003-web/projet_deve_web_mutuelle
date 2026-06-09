@@ -17,11 +17,13 @@ class PretController extends Controller
         $validated = $request->validate([
             'adherent_id' => 'required|exists:adherents,id',
             'montant' => 'required|numeric',
-            'taux_interet' => 'numeric',
+            'taux_interet' => 'nullable|numeric',
             'duree_mois' => 'required|integer',
             'date_debut' => 'required|date',
+            'statut' => 'nullable|in:en attente,approuvé,remboursé,rejeté',
         ]);
 
+        $validated['statut'] = $validated['statut'] ?? 'en attente';
         $pret = Pret::create($validated);
         return response()->json($pret, 201);
     }

@@ -18,8 +18,15 @@ class SinistreController extends Controller
             'adherent_id' => 'required|exists:adherents,id',
             'description' => 'required|string',
             'date_sinistre' => 'required|date',
-            'type_sinistre' => 'required|in:maladie,accident,décès,hospitalisation,autre',
+            'type' => 'nullable|in:maladie,accident,décès,hospitalisation,autre',
+            'statut' => 'nullable|in:déclaré,en cours,approuvé,rejeté,remboursé',
         ]);
+
+        // Map 'type' to 'type_sinistre' for database compatibility
+        $validated['type_sinistre'] = $validated['type'] ?? 'autre';
+        unset($validated['type']);
+        
+        $validated['statut'] = $validated['statut'] ?? 'déclaré';
 
         $sinistre = Sinistre::create($validated);
         return response()->json($sinistre, 201);

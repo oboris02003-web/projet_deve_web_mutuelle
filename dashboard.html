@@ -743,21 +743,17 @@
     </div>
     <div class="modal-err" id="adherent-err"></div>
     <div class="form-row">
-      <div class="form-group"><label class="form-label">Nom</label><input class="form-control" placeholder="Traoré"/></div>
-      <div class="form-group"><label class="form-label">Prénom</label><input class="form-control" placeholder="Issa"/></div>
+      <div class="form-group"><label class="form-label">Nom</label><input class="form-control" id="adherent-nom" placeholder="Traoré"/></div>
+      <div class="form-group"><label class="form-label">Prénom</label><input class="form-control" id="adherent-prenom" placeholder="Issa"/></div>
     </div>
-    <div class="form-group"><label class="form-label">Email</label><input class="form-control" type="email" placeholder="i.traore@bf.com"/></div>
+    <div class="form-group"><label class="form-label">Email</label><input class="form-control" id="adherent-email" type="email" placeholder="i.traore@bf.com"/></div>
     <div class="form-row">
-      <div class="form-group"><label class="form-label">Téléphone</label><input class="form-control" placeholder="+226 70 …"/></div>
-      <div class="form-group"><label class="form-label">N° Adhérent</label><input class="form-control" placeholder="ADH-005"/></div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Statut</label>
-      <select class="form-control"><option>Actif</option><option>Suspendu</option><option>Retraité</option></select>
+      <div class="form-group"><label class="form-label">Téléphone</label><input class="form-control" id="adherent-telephone" placeholder="+226 70 …"/></div>
+      <div class="form-group"><label class="form-label">Statut</label><select class="form-control" id="adherent-statut"><option value="Actif">Actif</option><option value="Suspendu">Suspendu</option><option value="Retraité">Retraité</option></select></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('modal-adherent')">Annuler</button>
-      <button class="btn btn-primary" onclick="closeModal('modal-adherent');toast('Adhérent enregistré','success')"><i class="fas fa-save"></i> Enregistrer</button>
+      <button class="btn btn-primary" onclick="saveAdherent()"><i class="fas fa-save"></i> Enregistrer</button>
     </div>
   </div>
 </div>
@@ -769,14 +765,14 @@
       <button class="modal-close" onclick="closeModal('modal-ayant-droit')">&times;</button>
     </div>
     <div class="form-row">
-      <div class="form-group"><label class="form-label">Nom</label><input class="form-control" placeholder="Koné"/></div>
-      <div class="form-group"><label class="form-label">Prénom</label><input class="form-control" placeholder="Aminata"/></div>
+      <div class="form-group"><label class="form-label">Nom</label><input class="form-control" id="ayant-nom" placeholder="Koné"/></div>
+      <div class="form-group"><label class="form-label">Prénom</label><input class="form-control" id="ayant-prenom" placeholder="Aminata"/></div>
     </div>
     <div class="form-row">
       <div class="form-group"><label class="form-label">Lien de parenté</label>
-        <select class="form-control"><option value="epoux">Époux</option><option value="enfant">Enfant</option><option value="parent">Parent</option><option value="autre">Autre</option></select>
+        <select class="form-control" id="ayant-lien"><option value="epoux">Époux</option><option value="enfant">Enfant</option><option value="parent">Parent</option><option value="autre">Autre</option></select>
       </div>
-      <div class="form-group"><label class="form-label">Date de naissance</label><input class="form-control" type="date"/></div>
+      <div class="form-group"><label class="form-label">Date de naissance</label><input class="form-control" id="ayant-ddn" type="date"/></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('modal-ayant-droit')">Annuler</button>
@@ -822,23 +818,23 @@
     </div>
     <div class="form-group">
       <label class="form-label">Adhérent</label>
-      <select class="form-control"><option>-- Sélectionner --</option><option>Koné Oumar</option><option>Ouédraogo Fatimata</option></select>
+      <select class="form-control" id="pret-adherent"><option value="">-- Sélectionner --</option></select>
     </div>
     <div class="form-row">
-      <div class="form-group"><label class="form-label">Montant (FCFA)</label><input class="form-control" type="number" placeholder="300000"/></div>
-      <div class="form-group"><label class="form-label">Taux d'intérêt (%)</label><input class="form-control" type="number" placeholder="5" step="0.5"/></div>
+      <div class="form-group"><label class="form-label">Montant (FCFA)</label><input class="form-control" id="pret-montant" type="number" placeholder="300000"/></div>
+      <div class="form-group"><label class="form-label">Taux d'intérêt (%)</label><input class="form-control" id="pret-taux" type="number" placeholder="5" step="0.5"/></div>
     </div>
     <div class="form-row">
-      <div class="form-group"><label class="form-label">Durée (mois)</label><input class="form-control" type="number" placeholder="12"/></div>
-      <div class="form-group"><label class="form-label">Date de début</label><input class="form-control" type="date"/></div>
+      <div class="form-group"><label class="form-label">Durée (mois)</label><input class="form-control" id="pret-duree" type="number" placeholder="12"/></div>
+      <div class="form-group"><label class="form-label">Date de début</label><input class="form-control" id="pret-debut" type="date"/></div>
     </div>
     <div class="form-group">
       <label class="form-label">Statut</label>
-      <select class="form-control"><option>En attente</option><option>Approuvé</option><option>Remboursé</option><option>Rejeté</option></select>
+      <select class="form-control" id="pret-statut"><option value="en attente">En attente</option><option value="approuvé">Approuvé</option><option value="remboursé">Remboursé</option><option value="rejeté">Rejeté</option></select>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('modal-pret')">Annuler</button>
-      <button class="btn btn-primary" onclick="closeModal('modal-pret');toast('Prêt enregistré','success')"><i class="fas fa-save"></i> Enregistrer</button>
+      <button class="btn btn-primary" onclick="savePret()"><i class="fas fa-save"></i> Enregistrer</button>
     </div>
   </div>
 </div>
@@ -851,23 +847,23 @@
     </div>
     <div class="form-group">
       <label class="form-label">Adhérent</label>
-      <select class="form-control"><option>-- Sélectionner --</option><option>Koné Oumar</option><option>Bambara Brice</option></select>
+      <select class="form-control" id="sinistre-adherent"><option value="">-- Sélectionner --</option></select>
     </div>
-    <div class="form-group"><label class="form-label">Description</label><textarea class="form-control" placeholder="Décrivez le sinistre…"></textarea></div>
+    <div class="form-group"><label class="form-label">Description</label><textarea class="form-control" id="sinistre-description" placeholder="Décrivez le sinistre…"></textarea></div>
     <div class="form-row">
       <div class="form-group">
         <label class="form-label">Type</label>
-        <select class="form-control"><option>Maladie</option><option>Accident</option><option>Décès</option><option>Hospitalisation</option><option>Autre</option></select>
+        <select class="form-control" id="sinistre-type"><option value="maladie">Maladie</option><option value="accident">Accident</option><option value="décès">Décès</option><option value="hospitalisation">Hospitalisation</option><option value="autre">Autre</option></select>
       </div>
-      <div class="form-group"><label class="form-label">Date du sinistre</label><input class="form-control" type="date"/></div>
+      <div class="form-group"><label class="form-label">Date du sinistre</label><input class="form-control" id="sinistre-date" type="date"/></div>
     </div>
     <div class="form-group">
       <label class="form-label">Statut</label>
-      <select class="form-control"><option>Déclaré</option><option>En cours</option><option>Approuvé</option><option>Rejeté</option><option>Remboursé</option></select>
+      <select class="form-control" id="sinistre-statut"><option value="déclaré">Déclaré</option><option value="en cours">En cours</option><option value="approuvé">Approuvé</option><option value="rejeté">Rejeté</option><option value="remboursé">Remboursé</option></select>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('modal-sinistre')">Annuler</button>
-      <button class="btn btn-primary" onclick="closeModal('modal-sinistre');toast('Sinistre enregistré','success')"><i class="fas fa-save"></i> Enregistrer</button>
+      <button class="btn btn-primary" onclick="saveSinistre()"><i class="fas fa-save"></i> Enregistrer</button>
     </div>
   </div>
 </div>

@@ -19,10 +19,14 @@ class AdherentController extends Controller
             'nom' => 'required|string',
             'prenom' => 'required|string',
             'email' => 'required|email|unique:adherents',
-            'telephone' => 'required|string',
-            'numero_adherent' => 'required|unique:adherents',
-            'date_inscription' => 'required|date',
+            'telephone' => 'nullable|string',
+            'statut' => 'nullable|in:Actif,Suspendu,Retraité',
         ]);
+
+        // Auto-générer le numéro adhérent et la date d'inscription si manquants
+        $validated['numero_adherent'] = $validated['numero_adherent'] ?? 'ADH-' . str_pad(Adherent::max('id') + 1, 3, '0', STR_PAD_LEFT);
+        $validated['date_inscription'] = $validated['date_inscription'] ?? now();
+        $validated['statut'] = $validated['statut'] ?? 'Actif';
 
         $adherent = Adherent::create($validated);
         return response()->json($adherent, 201);
