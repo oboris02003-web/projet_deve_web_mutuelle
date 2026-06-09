@@ -1440,12 +1440,35 @@ function exportData(module, format) {
   const token = getToken();
   if (!token) { toast('Non authentifié', 'error'); return; }
   toast(`Export ${module} en ${format.toUpperCase()} en cours…`, 'success');
-  const a    = document.createElement('a');
-  a.href     = `${API_URL}/${module}/export?format=${format}&token=${encodeURIComponent(token)}`;
-  a.download = `${module}_${new Date().toISOString().slice(0,10)}.${format}`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  
+  // Créer une requête avec Authorization Bearer header
+  fetch(`${API_URL}/${module}/export?format=${format}`, {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/json'
+    }
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+    return response.blob();
+  })
+  .then(blob => {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${module}_${new Date().toISOString().slice(0,10)}.${format}`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+    toast(`Export ${module} téléchargé !`, 'success');
+  })
+  .catch(err => {
+    console.error('Erreur export:', err);
+    toast(`Erreur lors de l'export de ${module}`, 'error');
+  });
 }
 
 /* ==============================

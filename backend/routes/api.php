@@ -10,6 +10,7 @@ use App\Http\Controllers\AlerteController;
 use App\Http\Controllers\HistoriqueController;
 use App\Http\Controllers\AdherentDashboardController;
 use App\Http\Controllers\SeedController;
+use App\Http\Controllers\RapportController;
 
 /* ====================================================================
  * ROUTE PUBLIQUE — Santé de l'API
@@ -89,6 +90,7 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/cotisations/export', [CotisationController::class, 'export']);
         Route::get('/prets/export',       [PretController::class, 'export']);
         Route::get('/sinistres/export',   [SinistreController::class, 'export']);
+        Route::get('/rapport/export',     [RapportController::class, 'export']);
 
         // CRUD complet adhérents
         Route::apiResource('adherents',   AdherentController::class);
