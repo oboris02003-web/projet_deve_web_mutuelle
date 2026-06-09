@@ -802,10 +802,16 @@ async function openEditAyantDroit(ayantId) {
   const inputs = form.querySelectorAll('input');
   const sels = form.querySelectorAll('select');
   
-  if (inputs[0]) inputs[0].value = ayant.nom || '';
-  if (inputs[1]) inputs[1].value = ayant.prenom || '';
-  if (inputs[2]) inputs[2].value = ayant.date_naissance ? ayant.date_naissance.slice(0, 10) : '';
-  if (sels[0]) sels[0].value = ayant.relation || 'epoux';
+  // Utiliser les IDs directement
+  const nomEl = document.getElementById('ayant-nom') || inputs[0];
+  const prenomEl = document.getElementById('ayant-prenom') || inputs[1];
+  const ddnEl = document.getElementById('ayant-ddn') || inputs[2];
+  const lienEl = document.getElementById('ayant-lien') || sels[0];
+  
+  if (nomEl) nomEl.value = ayant.nom || '';
+  if (prenomEl) prenomEl.value = ayant.prenom || '';
+  if (ddnEl) ddnEl.value = ayant.date_naissance ? ayant.date_naissance.slice(0, 10) : '';
+  if (lienEl) lienEl.value = ayant.relation || 'epoux';
   
   form.dataset.editId = ayantId;
   openModal('modal-ayant-droit');
@@ -935,12 +941,20 @@ async function openEditAdherent(id) {
     const form   = document.getElementById('modal-adherent');
     const inputs = form.querySelectorAll('input');
     const sel    = form.querySelector('select');
-    inputs[0].value = a.nom              || '';
-    inputs[1].value = a.prenom           || '';
-    inputs[2].value = a.email            || '';
-    inputs[3].value = a.telephone        || '';
-    inputs[4].value = a.numero_adherent  || '';
-    if (sel) sel.value = a.statut || 'actif';
+    
+    // Utiliser les IDs directement
+    const nomEl = document.getElementById('adherent-nom') || inputs[0];
+    const prenomEl = document.getElementById('adherent-prenom') || inputs[1];
+    const emailEl = document.getElementById('adherent-email') || inputs[2];
+    const telEl = document.getElementById('adherent-telephone') || inputs[3];
+    const statutEl = document.getElementById('adherent-statut') || sel;
+    
+    if (nomEl) nomEl.value = a.nom || '';
+    if (prenomEl) prenomEl.value = a.prenom || '';
+    if (emailEl) emailEl.value = a.email || '';
+    if (telEl) telEl.value = a.telephone || '';
+    if (statutEl) statutEl.value = a.statut || 'Actif';
+    
     document.getElementById('adherent-modal-title').textContent = 'Modifier l\'Adhérent';
     form.dataset.editId = id;
     openModal('modal-adherent');
@@ -1100,7 +1114,14 @@ async function saveSinistre() {
   const inputs = form.querySelectorAll('input');
   const ta     = form.querySelector('textarea');
   
-  const adherent_id = sels[0]?.value;
+  // Utiliser les IDs directement
+  const adherentEl = document.getElementById('sinistre-adherent') || sels[0];
+  const descEl = document.getElementById('sinistre-description') || ta;
+  const typeEl = document.getElementById('sinistre-type') || sels[1];
+  const dateEl = document.getElementById('sinistre-date') || inputs[0];
+  const statutEl = document.getElementById('sinistre-statut') || sels[2];
+
+  const adherent_id = adherentEl?.value;
   if (!adherent_id) {
     toast('Veuillez sélectionner un adhérent', 'error');
     return;
@@ -1108,10 +1129,10 @@ async function saveSinistre() {
 
   const body   = {
     adherent_id:   adherent_id,
-    description:   ta?.value?.trim(),
-    type:          sels[1]?.value,
-    date_sinistre: inputs[0]?.value,
-    statut:        sels[2]?.value,
+    description:   descEl?.value?.trim(),
+    type:          typeEl?.value,
+    date_sinistre: dateEl?.value,
+    statut:        statutEl?.value,
   };
 
   if (!body.type || !body.date_sinistre) {
@@ -1132,11 +1153,11 @@ async function saveSinistre() {
     delete form.dataset.editId;
     
     // Réinitialiser le formulaire
-    if (sels[0]) sels[0].value = '';
-    if (ta) ta.value = '';
-    if (sels[1]) sels[1].value = 'maladie';
-    if (inputs[0]) inputs[0].value = '';
-    if (sels[2]) sels[2].value = 'déclaré';
+    if (adherentEl) adherentEl.value = '';
+    if (descEl) descEl.value = '';
+    if (typeEl) typeEl.value = 'maladie';
+    if (dateEl) dateEl.value = '';
+    if (statutEl) statutEl.value = 'déclaré';
     
     loadSinistres();
   } catch (err) { 
@@ -1317,19 +1338,27 @@ async function savePret() {
   const sels   = form.querySelectorAll('select');
   const inputs = form.querySelectorAll('input');
   
-  const adherent_id = sels[0]?.value;
+  // Utiliser les IDs directement
+  const adherentEl = document.getElementById('pret-adherent') || sels[0];
+  const montantEl = document.getElementById('pret-montant') || inputs[0];
+  const tauxEl = document.getElementById('pret-taux') || inputs[1];
+  const dureeEl = document.getElementById('pret-duree') || inputs[2];
+  const debutEl = document.getElementById('pret-debut') || inputs[3];
+  const statutEl = document.getElementById('pret-statut') || sels[1];
+
+  const adherent_id = adherentEl?.value;
   if (!adherent_id) {
     toast('Veuillez sélectionner un adhérent', 'error');
     return;
   }
 
-  const montant = inputs[0]?.value;
+  const montant = montantEl?.value;
   if (!montant || isNaN(montant) || parseFloat(montant) <= 0) {
     toast('Le montant doit être un nombre positif', 'error');
     return;
   }
 
-  const duree = inputs[2]?.value;
+  const duree = dureeEl?.value;
   if (!duree || isNaN(duree) || parseInt(duree) <= 0) {
     toast('La durée doit être un nombre positif', 'error');
     return;
@@ -1338,10 +1367,10 @@ async function savePret() {
   const body   = {
     adherent_id:  adherent_id,
     montant:      parseFloat(montant),
-    taux_interet: parseFloat(inputs[1]?.value) || 0,
+    taux_interet: parseFloat(tauxEl?.value) || 0,
     duree_mois:   parseInt(duree),
-    date_debut:   inputs[3]?.value,
-    statut:       sels[1]?.value,
+    date_debut:   debutEl?.value,
+    statut:       statutEl?.value,
   };
 
   try {
@@ -1357,12 +1386,12 @@ async function savePret() {
     delete form.dataset.editId;
     
     // Réinitialiser le formulaire
-    if (sels[0]) sels[0].value = '';
-    if (inputs[0]) inputs[0].value = '';
-    if (inputs[1]) inputs[1].value = '5';
-    if (inputs[2]) inputs[2].value = '';
-    if (inputs[3]) inputs[3].value = '';
-    if (sels[1]) sels[1].value = 'en attente';
+    if (adherentEl) adherentEl.value = '';
+    if (montantEl) montantEl.value = '';
+    if (tauxEl) tauxEl.value = '5';
+    if (dureeEl) dureeEl.value = '';
+    if (debutEl) debutEl.value = '';
+    if (statutEl) statutEl.value = 'en attente';
     
     loadPrets();
   } catch (err) { 
@@ -1379,21 +1408,29 @@ async function openEditPret(id) {
     const inputs = form.querySelectorAll('input');
     const sels   = form.querySelectorAll('select');
     
+    // Utiliser les IDs directement
+    const adherentEl = document.getElementById('pret-adherent') || sels[0];
+    const montantEl = document.getElementById('pret-montant') || inputs[0];
+    const tauxEl = document.getElementById('pret-taux') || inputs[1];
+    const dureeEl = document.getElementById('pret-duree') || inputs[2];
+    const debutEl = document.getElementById('pret-debut') || inputs[3];
+    const statutEl = document.getElementById('pret-statut') || sels[1];
+    
     // Vérifier que l'adhérent existe dans le select
     const adherentId = p.adherent_id || (p.adherent?.id);
-    if (!sels[0].querySelector(`option[value="${adherentId}"]`)) {
+    if (adherentEl && !adherentEl.querySelector(`option[value="${adherentId}"]`)) {
       const opt = document.createElement('option');
       opt.value = adherentId;
       opt.textContent = `${p.adherent?.nom || ''} ${p.adherent?.prenom || ''}`.trim();
-      sels[0].appendChild(opt);
+      adherentEl.appendChild(opt);
     }
     
-    sels[0].value   = adherentId || '';
-    inputs[0].value = p.montant      || '';
-    inputs[1].value = p.taux_interet || '';
-    inputs[2].value = p.duree_mois   || '';
-    inputs[3].value = p.date_debut   ? p.date_debut.slice(0, 10) : '';
-    sels[1].value   = p.statut       || 'en attente';
+    if (adherentEl) adherentEl.value = adherentId || '';
+    if (montantEl) montantEl.value = p.montant || '';
+    if (tauxEl) tauxEl.value = p.taux_interet || '';
+    if (dureeEl) dureeEl.value = p.duree_mois || '';
+    if (debutEl) debutEl.value = p.date_debut ? p.date_debut.slice(0, 10) : '';
+    if (statutEl) statutEl.value = p.statut || 'en attente';
     form.dataset.editId = id;
     openModal('modal-pret');
   } catch (err) { 
@@ -1460,20 +1497,27 @@ async function openEditSinistre(id) {
     const inputs = form.querySelectorAll('input');
     const ta     = form.querySelector('textarea');
     
+    // Utiliser les IDs directement
+    const adherentEl = document.getElementById('sinistre-adherent') || sels[0];
+    const descEl = document.getElementById('sinistre-description') || ta;
+    const dateEl = document.getElementById('sinistre-date') || inputs[0];
+    const typeEl = document.getElementById('sinistre-type') || sels[1];
+    const statutEl = document.getElementById('sinistre-statut') || sels[2];
+    
     // Vérifier que l'adhérent existe dans le select
     const adherentId = s.adherent_id || (s.adherent?.id);
-    if (!sels[0].querySelector(`option[value="${adherentId}"]`)) {
+    if (adherentEl && !adherentEl.querySelector(`option[value="${adherentId}"]`)) {
       const opt = document.createElement('option');
       opt.value = adherentId;
       opt.textContent = `${s.adherent?.nom || ''} ${s.adherent?.prenom || ''}`.trim();
-      sels[0].appendChild(opt);
+      adherentEl.appendChild(opt);
     }
     
-    sels[0].value   = adherentId || '';
-    if (ta) ta.value = s.description || '';
-    inputs[0].value = s.date_sinistre ? s.date_sinistre.slice(0, 10) : '';
-    sels[1].value   = s.type   || 'maladie';
-    sels[2].value   = s.statut || 'déclaré';
+    if (adherentEl) adherentEl.value = adherentId || '';
+    if (descEl) descEl.value = s.description || '';
+    if (dateEl) dateEl.value = s.date_sinistre ? s.date_sinistre.slice(0, 10) : '';
+    if (typeEl) typeEl.value = s.type || 'maladie';
+    if (statutEl) statutEl.value = s.statut || 'déclaré';
     form.dataset.editId = id;
     openModal('modal-sinistre');
   } catch (err) { 
