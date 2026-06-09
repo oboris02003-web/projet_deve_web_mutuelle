@@ -194,6 +194,7 @@ function closeModal(id) {
   const modal = document.getElementById(id);
   if (modal) {
     modal.classList.remove('open');
+    modal.style.display = 'none';
     console.log('Modal closed:', id);
   }
 }
@@ -736,8 +737,8 @@ async function loadAyantsDroitForAdherent(adherentId) {
         <td>${a.relation || '—'}</td>
         <td>${a.date_naissance ? new Date(a.date_naissance).toLocaleDateString('fr-FR') : '—'}</td>
         <td>
-          <button class="icon-btn" title="Modifier" onclick="openEditAyantDroit(${a.id})"><i class="fas fa-pen"></i></button>
-          <button class="icon-btn" style="margin-left:4px" onclick="deleteAyantDroit(${a.id}, '${(a.nom || '').replace(/'/g,"\\'")}')"><i class="fas fa-trash"></i></button>
+          <button class="icon-btn" title="Modifier" onclick="openEditAyantDroit(${a.id}, ${adherentId})"><i class="fas fa-pen"></i></button>
+          <button class="icon-btn" style="margin-left:4px" onclick="deleteAyantDroit(${a.id}, ${adherentId}, '${(a.nom || '').replace(/'/g,"\\'")}')"><i class="fas fa-trash"></i></button>
         </td>
       </tr>`).join('');
 
@@ -792,9 +793,53 @@ function filterAyantsDroit() {
   });
 }
 
-async function openEditAyantDroit(ayantId) {
-  if (!_selectedAdherentId) { toast('Adhérent non sélectionné', 'error'); return; }
-  const adherent = await apiCall(`/adherents/${_selectedAdherentId}`);
+async function openAddAyantDroit() {
+  // Ouvrir le modal pour ajouter un nouvel ayant droit
+  // Remplir le select avec les adhérents disponibles
+  const form = document.getElementById('modal-ayant-droit');
+  const adherentSelectEl = document.getElementById('ayant-adherent');
+  const inputs = form.querySelectorAll('input');
+  const sels = form.querySelectorAll('select');
+  
+  // Charger les adhérents pour le select
+  if (adherentSelectEl) {
+    try {
+      const data = await apiCall('/adherents');
+      const adherents = data?.data || data || [];
+      adherentSelectEl.innerHTML = '<option value="">-- Sélectionner un adhérent --</option>';
+      adherents.forEach(a => {
+        const option = document.createElement('option');
+        option.value = a.id;
+        option.textContent = `${a.nom || ''} ${a.prenom || ''}`.trim();
+        adherentSelectEl.appendChild(option);
+      });
+      // Pré-sélectionner l'adhérent actuellement affiché
+      if (_selectedAdherentId) {
+        adherentSelectEl.value = _selectedAdherentId;
+      }
+    } catch (err) {
+      toast('Erreur : ' + err.message, 'error');
+    }
+  }
+  
+  // Réinitialiser le formulaire
+  if (inputs[0]) inputs[0].value = '';
+  if (inputs[1]) inputs[1].value = '';
+  if (inputs[2]) inputs[2].value = '';
+  if (sels[1]) sels[1].value = 'autre';
+  
+  delete form.dataset.editId;
+  delete form.dataset.adherentId;
+  
+  openModal('modal-ayant-droit');
+}
+
+async function openEditAyantDroit(ayantId, adherentId = null) {
+  // Utiliser adherentId passé en paramètre, sinon utiliser _selectedAdherentId
+  const adhrId = adherentId || _selectedAdherentId;
+  if (!adhrId) { toast('Adhérent non sélectionné', 'error'); return; }
+  
+  const adherent = await apiCall(`/adherents/${adhrId}`);
   const ayant = (adherent?.ayantsDroit || adherent?.ayants_droit || []).find(a => a.id == ayantId);
   if (!ayant) { toast('Ayant droit non trouvé', 'error'); return; }
   
@@ -803,43 +848,55 @@ async function openEditAyantDroit(ayantId) {
   const sels = form.querySelectorAll('select');
   
   // Utiliser les IDs directement
+  const adherentSelectEl = document.getElementById('ayant-adherent') || sels[0];
   const nomEl = document.getElementById('ayant-nom') || inputs[0];
   const prenomEl = document.getElementById('ayant-prenom') || inputs[1];
   const ddnEl = document.getElementById('ayant-ddn') || inputs[2];
-  const lienEl = document.getElementById('ayant-lien') || sels[0];
+  const lienEl = document.getElementById('ayant-lien') || sels[1];
   
+  if (adherentSelectEl) adherentSelectEl.value = adhrId;
   if (nomEl) nomEl.value = ayant.nom || '';
   if (prenomEl) prenomEl.value = ayant.prenom || '';
   if (ddnEl) ddnEl.value = ayant.date_naissance ? ayant.date_naissance.slice(0, 10) : '';
   if (lienEl) lienEl.value = ayant.relation || 'epoux';
   
   form.dataset.editId = ayantId;
+  form.dataset.adherentId = adhrId;
   openModal('modal-ayant-droit');
 }
 
-async function deleteAyantDroit(ayantId, ayantName) {
-  if (!_selectedAdherentId) { toast('Adhérent non sélectionné', 'error'); return; }
+async function deleteAyantDroit(ayantId, adherentId = null, ayantName) {
+  // Utiliser adherentId passé en paramètre, sinon utiliser _selectedAdherentId
+  const adhrId = adherentId || _selectedAdherentId;
+  if (!adhrId) { toast('Adhérent non sélectionné', 'error'); return; }
   confirmDelete(`cet ayant droit (${ayantName})`, async () => {
     try {
-      await apiCall(`/adherents/${_selectedAdherentId}/ayants-droit/${ayantId}`, { method: 'DELETE' });
+      await apiCall(`/adherents/${adhrId}/ayants-droit/${ayantId}`, { method: 'DELETE' });
       toast('Ayant droit supprimé', 'success');
-      await loadAyantsDroitForAdherent(_selectedAdherentId);
+      await loadAyantsDroitForAdherent(adhrId);
     } catch (err) { toast('Erreur : ' + err.message, 'error'); }
   });
 }
 
 async function saveAyantDroit() {
-  if (!_selectedAdherentId) { toast('Adhérent non sélectionné', 'error'); return; }
-  
   const form   = document.getElementById('modal-ayant-droit');
   const inputs = form.querySelectorAll('input');
   const sels   = form.querySelectorAll('select');
   
   // Utiliser les IDs directement
+  const adherentSelectEl = document.getElementById('ayant-adherent') || sels[0];
   const nomEl = document.getElementById('ayant-nom') || inputs[0];
   const prenomEl = document.getElementById('ayant-prenom') || inputs[1];
   const ddnEl = document.getElementById('ayant-ddn') || inputs[2];
-  const lienEl = document.getElementById('ayant-lien') || sels[0];
+  const lienEl = document.getElementById('ayant-lien') || sels[1];
+  
+  // Déterminer l'ID adhérent: form.dataset.adherentId, puis select du modal, puis variable globale
+  const adherent_id = form.dataset.adherentId || adherentSelectEl?.value || _selectedAdherentId;
+  
+  if (!adherent_id) { 
+    toast('Adhérent non sélectionné', 'error'); 
+    return; 
+  }
 
   const body = {
     nom:      nomEl?.value?.trim(),
@@ -856,13 +913,13 @@ async function saveAyantDroit() {
   try {
     const id = form.dataset.editId;
     if (id) {
-      await apiCall(`/adherents/${_selectedAdherentId}/ayants-droit/${id}`, { 
+      await apiCall(`/adherents/${adherent_id}/ayants-droit/${id}`, { 
         method: 'PUT', 
         body: JSON.stringify(body) 
       });
       toast('Ayant droit modifié', 'success');
     } else {
-      await apiCall(`/adherents/${_selectedAdherentId}/ayants-droit`, { 
+      await apiCall(`/adherents/${adherent_id}/ayants-droit`, { 
         method: 'POST', 
         body: JSON.stringify(body) 
       });
@@ -870,12 +927,16 @@ async function saveAyantDroit() {
     }
     closeModal('modal-ayant-droit');
     delete form.dataset.editId;
+    delete form.dataset.adherentId;
     // Réinitialiser le formulaire
+    if (adherentSelectEl) adherentSelectEl.value = '';
     if (nomEl) nomEl.value = '';
     if (prenomEl) prenomEl.value = '';
     if (ddnEl) ddnEl.value = '';
     if (lienEl) lienEl.value = 'autre';
-    await loadAyantsDroitForAdherent(_selectedAdherentId);
+    if (_selectedAdherentId) {
+      await loadAyantsDroitForAdherent(_selectedAdherentId);
+    }
   } catch (err) {
     toast('Erreur : ' + err.message, 'error');
   }

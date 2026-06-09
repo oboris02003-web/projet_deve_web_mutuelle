@@ -432,7 +432,7 @@
               <input type="text" placeholder="Rechercher…" oninput="filterAyantsDroit()"/>
             </div>
             <button class="btn btn-ghost btn-sm" onclick="showSection('adherents')"><i class="fas fa-arrow-left"></i> Retour</button>
-            <button class="btn btn-primary btn-sm" onclick="openModal('modal-ayant-droit')"><i class="fas fa-plus"></i> Ajouter un ayant droit</button>
+            <button class="btn btn-primary btn-sm" onclick="openAddAyantDroit()"><i class="fas fa-plus"></i> Ajouter un ayant droit</button>
           </div>
         </div>
         <div class="tcard">
@@ -763,6 +763,12 @@
     <div class="modal-head">
       <h2>Ajouter un Ayant Droit</h2>
       <button class="modal-close" onclick="closeModal('modal-ayant-droit')">&times;</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Adhérent</label>
+      <select class="form-control" id="ayant-adherent" required>
+        <option value="">-- Sélectionner un adhérent --</option>
+      </select>
     </div>
     <div class="form-row">
       <div class="form-group"><label class="form-label">Nom</label><input class="form-control" id="ayant-nom" placeholder="Koné"/></div>

@@ -167,7 +167,17 @@ async function apiCall(endpoint, options = {}) {
     const data = await response.json();
 
     if (!response.ok) {
-        const message = data?.message || data?.error || response.statusText || 'Erreur inconnue';
+        // Extraire les messages d'erreur de validation (Laravel)
+        let message = data?.message || data?.error || response.statusText || 'Erreur inconnue';
+        
+        // Pour les erreurs de validation (422), essayer d'extraire le premier message d'erreur
+        if (response.status === 422 && data?.errors) {
+            const firstError = Object.values(data.errors).flat()[0];
+            if (firstError) {
+                message = firstError;
+            }
+        }
+        
         const err     = new Error(message);
         err.status    = response.status;
         throw err;
