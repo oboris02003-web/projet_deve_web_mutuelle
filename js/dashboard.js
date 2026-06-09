@@ -1035,235 +1035,33 @@ async function saveCotisation() {
 }
 
 /* ==============================
-   ADHÉRENTS
-   ============================== */
-async function saveAdherent() {
-  const nom = document.getElementById('adherent-nom').value;
-  const prenom = document.getElementById('adherent-prenom').value;
-  const email = document.getElementById('adherent-email').value;
-  const telephone = document.getElementById('adherent-telephone').value;
-  const statut = document.getElementById('adherent-statut').value;
-
-  if (!nom || !prenom || !email) {
-    toast('Veuillez remplir tous les champs obligatoires', 'error');
-    return;
-  }
-
-  const body = {
-    nom: nom.trim(),
-    prenom: prenom.trim(),
-    email: email.trim(),
-    telephone: telephone.trim() || null,
-    statut: statut || 'Actif',
-  };
-
-  try {
-    await apiCall('/adherents', { method: 'POST', body: JSON.stringify(body) });
-    toast('Adhérent enregistré', 'success');
-    closeModal('modal-adherent');
-    
-    // Réinitialiser le formulaire
-    document.getElementById('adherent-nom').value = '';
-    document.getElementById('adherent-prenom').value = '';
-    document.getElementById('adherent-email').value = '';
-    document.getElementById('adherent-telephone').value = '';
-    document.getElementById('adherent-statut').value = 'Actif';
-    
-    // Recharger adhérents
-    loadAdherentsSelect();
-  } catch (err) { 
-    console.error('Erreur saveAdherent:', err);
-    toast('Erreur : ' + err.message, 'error'); 
-  }
-}
-
-/* ==============================
-   AYANTS DROIT
-   ============================== */
-async function saveAyantDroit() {
-  const nom = document.getElementById('ayant-nom').value;
-  const prenom = document.getElementById('ayant-prenom').value;
-  const lien = document.getElementById('ayant-lien').value;
-  const ddn = document.getElementById('ayant-ddn').value;
-
-  if (!nom || !prenom || !ddn) {
-    toast('Veuillez remplir tous les champs obligatoires', 'error');
-    return;
-  }
-
-  const body = {
-    nom: nom.trim(),
-    prenom: prenom.trim(),
-    lien_parente: lien || 'autre',
-    date_naissance: ddn,
-  };
-
-  try {
-    // Récupérer l'ID de l'adhérent depuis le contexte
-    const currentAdherentId = sessionStorage.getItem('current_adherent_id');
-    if (!currentAdherentId) {
-      toast('Veuillez sélectionner un adhérent d\'abord', 'error');
-      return;
-    }
-
-    await apiCall(`/adherents/${currentAdherentId}/ayants-droit`, { 
-      method: 'POST', 
-      body: JSON.stringify(body) 
-    });
-    
-    toast('Ayant droit enregistré', 'success');
-    closeModal('modal-ayant-droit');
-    
-    // Réinitialiser le formulaire
-    document.getElementById('ayant-nom').value = '';
-    document.getElementById('ayant-prenom').value = '';
-    document.getElementById('ayant-lien').value = 'autre';
-    document.getElementById('ayant-ddn').value = '';
-  } catch (err) { 
-    console.error('Erreur saveAyantDroit:', err);
-    toast('Erreur : ' + err.message, 'error'); 
-  }
-}
-
-/* ==============================
-   PRÊTS
-   ============================== */
-async function savePret() {
-  const adherent_id = document.getElementById('pret-adherent').value;
-  const montant = document.getElementById('pret-montant').value;
-  const taux = document.getElementById('pret-taux').value;
-  const duree = document.getElementById('pret-duree').value;
-  const date_debut = document.getElementById('pret-debut').value;
-  const statut = document.getElementById('pret-statut').value;
-
-  if (!adherent_id || !montant || !taux || !duree || !date_debut) {
-    toast('Veuillez remplir tous les champs obligatoires', 'error');
-    return;
-  }
-
-  const body = {
-    adherent_id: parseInt(adherent_id),
-    montant: parseFloat(montant),
-    taux_interet: parseFloat(taux),
-    duree_mois: parseInt(duree),
-    date_debut: date_debut,
-    statut: statut || 'en attente',
-  };
-
-  try {
-    await apiCall('/prets', { method: 'POST', body: JSON.stringify(body) });
-    toast('Prêt enregistré', 'success');
-    closeModal('modal-pret');
-    
-    // Réinitialiser le formulaire
-    document.getElementById('pret-adherent').value = '';
-    document.getElementById('pret-montant').value = '';
-    document.getElementById('pret-taux').value = '';
-    document.getElementById('pret-duree').value = '';
-    document.getElementById('pret-debut').value = '';
-    document.getElementById('pret-statut').value = 'en attente';
-    
-    loadPrets();
-  } catch (err) { 
-    console.error('Erreur savePret:', err);
-    toast('Erreur : ' + err.message, 'error'); 
-  }
-}
-
-/* ==============================
    SINISTRES
    ============================== */
 async function saveSinistre() {
-  const adherent_id = document.getElementById('sinistre-adherent').value;
-  const description = document.getElementById('sinistre-description').value;
-  const type = document.getElementById('sinistre-type').value;
-  const date = document.getElementById('sinistre-date').value;
-  const statut = document.getElementById('sinistre-statut').value;
-
-  if (!adherent_id || !description || !type || !date) {
-    toast('Veuillez remplir tous les champs obligatoires', 'error');
-    return;
-  }
-
-  const body = {
-    adherent_id: parseInt(adherent_id),
-    description: description.trim(),
-    type: type || 'autre',
-    date_sinistre: date,
-    statut: statut || 'déclaré',
+  const form   = document.getElementById('modal-sinistre');
+  const sels   = form.querySelectorAll('select');
+  const inputs = form.querySelectorAll('input');
+  const ta     = form.querySelector('textarea');
+  const body   = {
+    adherent_id:   sels[0]?.value,
+    description:   ta?.value,
+    type:          sels[1]?.value,
+    date_sinistre: inputs[0]?.value,
+    statut:        sels[2]?.value,
   };
-
   try {
-    await apiCall('/sinistres', { method: 'POST', body: JSON.stringify(body) });
-    toast('Sinistre enregistré', 'success');
+    const id = form.dataset.editId;
+    if (id) {
+      await apiCall(`/sinistres/${id}`, { method: 'PUT', body: JSON.stringify(body) });
+      toast('Sinistre modifié', 'success');
+    } else {
+      await apiCall('/sinistres', { method: 'POST', body: JSON.stringify(body) });
+      toast('Sinistre enregistré', 'success');
+    }
     closeModal('modal-sinistre');
-    
-    // Réinitialiser le formulaire
-    document.getElementById('sinistre-adherent').value = '';
-    document.getElementById('sinistre-description').value = '';
-    document.getElementById('sinistre-type').value = 'autre';
-    document.getElementById('sinistre-date').value = '';
-    document.getElementById('sinistre-statut').value = 'déclaré';
-    
+    delete form.dataset.editId;
     loadSinistres();
-  } catch (err) { 
-    console.error('Erreur saveSinistre:', err);
-    toast('Erreur : ' + err.message, 'error'); 
-  }
-}
-
-async function loadPrets() {
-  try {
-    const data = await apiCall('/prets');
-    const list = data?.data || data || [];
-    const tbody = document.getElementById('pretsBody');
-    
-    if (!list.length) { 
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--gray-4)">Aucun prêt enregistré</td></tr>';
-      return;
-    }
-
-    tbody.innerHTML = list.map(p => `
-      <tr>
-        <td>${p.adherent?.nom || ''} ${p.adherent?.prenom || ''}</td>
-        <td>${fmtFCFA(p.montant)}</td>
-        <td>${p.taux_interet}%</td>
-        <td>${p.duree_mois} mois</td>
-        <td>${fmtFCFA(Math.round(p.montant / p.duree_mois))}</td>
-        <td>${badgeStatut(p.statut)}</td>
-        <td><button class="icon-btn"><i class="fas fa-pen"></i></button></td>
-      </tr>`).join('');
-  } catch (err) {
-    const tbody = document.getElementById('pretsBody');
-    if (tbody) tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--red)">Erreur : ${err.message}</td></tr>`;
-  }
-}
-
-async function loadSinistres() {
-  try {
-    const data = await apiCall('/sinistres');
-    const list = data?.data || data || [];
-    const tbody = document.getElementById('sinistresBody');
-    
-    if (!list.length) { 
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--gray-4)">Aucun sinistre déclaré</td></tr>';
-      return;
-    }
-
-    tbody.innerHTML = list.map(s => `
-      <tr>
-        <td>${s.adherent?.nom || ''} ${s.adherent?.prenom || ''}</td>
-        <td><span class="badge b-indigo">${s.type || 'autre'}</span></td>
-        <td>${s.description.substring(0, 40)}${s.description.length > 40 ? '...' : ''}</td>
-        <td>${fmtDate(s.date_sinistre)}</td>
-        <td>${s.montant_reclamation ? fmtFCFA(s.montant_reclamation) : 'En évaluation'}</td>
-        <td>${badgeStatut(s.statut)}</td>
-        <td><button class="icon-btn"><i class="fas fa-pen"></i></button></td>
-      </tr>`).join('');
-  } catch (err) {
-    const tbody = document.getElementById('sinistresBody');
-    if (tbody) tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--red)">Erreur : ${err.message}</td></tr>`;
-  }
+  } catch (err) { toast('Erreur : ' + err.message, 'error'); }
 }
 
 async function openEditCotisation(id) {
@@ -1498,33 +1296,6 @@ async function loadSinistres() {
     showTableError('sinistresBody', 7, err.message);
     toast('Erreur sinistres : ' + err.message, 'error');
   }
-}
-
-async function saveSinistre() {
-  const form   = document.getElementById('modal-sinistre');
-  const sels   = form.querySelectorAll('select');
-  const inputs = form.querySelectorAll('input');
-  const ta     = form.querySelector('textarea');
-  const body   = {
-    adherent_id:   sels[0]?.value,
-    description:   ta?.value,
-    type:          sels[1]?.value,
-    date_sinistre: inputs[0]?.value,
-    statut:        sels[2]?.value,
-  };
-  try {
-    const id = form.dataset.editId;
-    if (id) {
-      await apiCall(`/sinistres/${id}`, { method: 'PUT', body: JSON.stringify(body) });
-      toast('Sinistre modifié', 'success');
-    } else {
-      await apiCall('/sinistres', { method: 'POST', body: JSON.stringify(body) });
-      toast('Sinistre enregistré', 'success');
-    }
-    closeModal('modal-sinistre');
-    delete form.dataset.editId;
-    loadSinistres();
-  } catch (err) { toast('Erreur : ' + err.message, 'error'); }
 }
 
 async function openEditSinistre(id) {
