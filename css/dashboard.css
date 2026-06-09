@@ -365,23 +365,32 @@ canvas { max-height: 220px; }
    MODALS
    ============================== */
 .overlay {
-  display: none; position: fixed; inset: 0;
+  display: none; position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(28,18,7,.5); z-index: 900;
   align-items: center; justify-content: center;
   backdrop-filter: blur(3px);
 }
-.overlay.open { display: flex; }
+.overlay.open { 
+  display: flex !important;
+}
 .modal {
   background: var(--white); border-radius: var(--rad-xl);
   padding: 28px; width: 90%; max-width: 540px;
   max-height: 90vh; overflow-y: auto;
   box-shadow: var(--shadow-lg);
   animation: modalIn .24s ease;
+  z-index: 901;
 }
 .modal.wide { max-width: 720px; }
 @keyframes modalIn {
   from { opacity: 0; transform: scale(.95) translateY(-10px); }
   to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+/* Force modal visibility */
+.overlay.open .modal {
+  display: block !important;
+  visibility: visible !important;
 }
 .modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .modal-head h2 { font-size: 1.05rem; font-weight: 700; color: var(--dark); }

@@ -179,13 +179,30 @@ function updateDate() {
 /* ==============================
    MODALS
    ============================== */
-function openModal(id)  { document.getElementById(id)?.classList.add('open');    }
-function closeModal(id) { document.getElementById(id)?.classList.remove('open'); }
+function openModal(id)  { 
+  const modal = document.getElementById(id);
+  if (modal) {
+    modal.classList.add('open');
+    modal.style.display = 'flex';
+    console.log('Modal opened:', id);
+  } else {
+    console.error('Modal not found:', id);
+  }
+}
+
+function closeModal(id) { 
+  const modal = document.getElementById(id);
+  if (modal) {
+    modal.classList.remove('open');
+    console.log('Modal closed:', id);
+  }
+}
 
 function initModals() {
   document.querySelectorAll('.overlay').forEach(ov => {
     ov.addEventListener('click', e => { if (e.target === ov) ov.classList.remove('open'); });
   });
+  console.log('Modals initialized');
 }
 
 /* Confirm delete avec callback réel */
@@ -812,11 +829,17 @@ async function saveAyantDroit() {
   const inputs = form.querySelectorAll('input');
   const sels   = form.querySelectorAll('select');
   
+  // Utiliser les IDs directement
+  const nomEl = document.getElementById('ayant-nom') || inputs[0];
+  const prenomEl = document.getElementById('ayant-prenom') || inputs[1];
+  const ddnEl = document.getElementById('ayant-ddn') || inputs[2];
+  const lienEl = document.getElementById('ayant-lien') || sels[0];
+
   const body = {
-    nom:      inputs[0]?.value?.trim(),
-    prenom:   inputs[1]?.value?.trim(),
-    relation: sels[0]?.value || 'autre',
-    date_naissance: inputs[2]?.value,
+    nom:      nomEl?.value?.trim(),
+    prenom:   prenomEl?.value?.trim(),
+    relation: lienEl?.value || 'autre',
+    date_naissance: ddnEl?.value,
   };
   
   if (!body.nom || !body.prenom) {
@@ -842,10 +865,10 @@ async function saveAyantDroit() {
     closeModal('modal-ayant-droit');
     delete form.dataset.editId;
     // Réinitialiser le formulaire
-    inputs[0].value = '';
-    inputs[1].value = '';
-    inputs[2].value = '';
-    if (sels[0]) sels[0].value = 'autre';
+    if (nomEl) nomEl.value = '';
+    if (prenomEl) prenomEl.value = '';
+    if (ddnEl) ddnEl.value = '';
+    if (lienEl) lienEl.value = 'autre';
     await loadAyantsDroitForAdherent(_selectedAdherentId);
   } catch (err) {
     toast('Erreur : ' + err.message, 'error');
@@ -859,12 +882,19 @@ async function saveAdherent() {
   const errEl  = document.getElementById('adherent-err');
   if (errEl) errEl.textContent = '';
 
+  // Utiliser les IDs directement pour plus de robustesse
+  const nomEl = document.getElementById('adherent-nom') || inputs[0];
+  const prenomEl = document.getElementById('adherent-prenom') || inputs[1];
+  const emailEl = document.getElementById('adherent-email') || inputs[2];
+  const telEl = document.getElementById('adherent-telephone') || inputs[3];
+  const statutEl = document.getElementById('adherent-statut') || sel;
+
   const body = {
-    nom:             inputs[0]?.value?.trim(),
-    prenom:          inputs[1]?.value?.trim(),
-    email:           inputs[2]?.value?.trim(),
-    telephone:       inputs[3]?.value?.trim(),
-    statut:          sel?.value,
+    nom:             nomEl?.value?.trim(),
+    prenom:          prenomEl?.value?.trim(),
+    email:           emailEl?.value?.trim(),
+    telephone:       telEl?.value?.trim(),
+    statut:          statutEl?.value,
   };
 
   if (!body.nom || !body.email) {
@@ -884,11 +914,11 @@ async function saveAdherent() {
     closeModal('modal-adherent');
     delete form.dataset.editId;
     // Réinitialiser le formulaire
-    inputs[0].value = '';
-    inputs[1].value = '';
-    inputs[2].value = '';
-    inputs[3].value = '';
-    if (sel) sel.value = 'Actif';
+    if (nomEl) nomEl.value = '';
+    if (prenomEl) prenomEl.value = '';
+    if (emailEl) emailEl.value = '';
+    if (telEl) telEl.value = '';
+    if (statutEl) statutEl.value = 'Actif';
     const titleEl = document.getElementById('adherent-modal-title');
     if (titleEl) titleEl.textContent = 'Nouvel Adhérent';
     loadAdherents();
