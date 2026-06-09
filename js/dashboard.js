@@ -914,6 +914,25 @@ async function deleteAdherent(id, nom) {
 /* ==============================
    COTISATIONS
    ============================== */
+async function loadAdherentsSelect() {
+  try {
+    const data = await apiCall('/adherents');
+    const adherents = data?.data || data || [];
+    const select = document.getElementById('cotisation-adherent');
+    if (!select) return;
+    
+    select.innerHTML = '<option value="">-- Sélectionner un adhérent --</option>';
+    adherents.forEach(a => {
+      const option = document.createElement('option');
+      option.value = a.id;
+      option.textContent = `${a.nom || ''} ${a.prenom || ''}`.trim();
+      select.appendChild(option);
+    });
+  } catch (err) {
+    console.error('Erreur chargement adhérents:', err);
+  }
+}
+
 async function loadCotisations() {
   showTableLoading('cotisationsBody', 6);
   try {
@@ -943,16 +962,27 @@ async function loadCotisations() {
 }
 
 async function saveCotisation() {
-  const form   = document.getElementById('modal-cotisation');
-  const sels   = form.querySelectorAll('select');
-  const inputs = form.querySelectorAll('input');
-  const body   = {
-    adherent_id:   sels[0]?.value,
-    montant:       inputs[0]?.value,
-    date_echeance: inputs[1]?.value,
-    statut:        sels[1]?.value,
+  const adherent_id = document.getElementById('cotisation-adherent').value;
+  const montant = document.getElementById('cotisation-montant').value;
+  const date_echeance = document.getElementById('cotisation-echeance').value;
+  const mode_paiement = document.getElementById('cotisation-mode').value;
+  const statut = document.getElementById('cotisation-statut').value;
+
+  if (!adherent_id || !montant || !date_echeance) {
+    toast('Veuillez remplir tous les champs obligatoires', 'error');
+    return;
+  }
+
+  const body = {
+    adherent_id: parseInt(adherent_id),
+    montant: parseFloat(montant),
+    date_echeance: date_echeance,
+    mode_paiement: mode_paiement || null,
+    statut: statut || 'en attente',
   };
+
   try {
+    const form = document.getElementById('modal-cotisation');
     const id = form.dataset.editId;
     if (id) {
       await apiCall(`/cotisations/${id}`, { method: 'PUT', body: JSON.stringify(body) });
@@ -963,22 +993,36 @@ async function saveCotisation() {
     }
     closeModal('modal-cotisation');
     delete form.dataset.editId;
+    
+    // Réinitialiser le formulaire
+    document.getElementById('cotisation-adherent').value = '';
+    document.getElementById('cotisation-montant').value = '';
+    document.getElementById('cotisation-echeance').value = '';
+    document.getElementById('cotisation-mode').value = '';
+    document.getElementById('cotisation-statut').value = 'en attente';
+    
     loadCotisations();
-  } catch (err) { toast('Erreur : ' + err.message, 'error'); }
+  } catch (err) { 
+    console.error('Erreur saveCotisation:', err);
+    toast('Erreur : ' + err.message, 'error'); 
+  }
 }
 
 async function openEditCotisation(id) {
   try {
     const c      = await apiCall(`/cotisations/${id}`);
     const form   = document.getElementById('modal-cotisation');
-    const inputs = form.querySelectorAll('input');
-    const sels   = form.querySelectorAll('select');
-    inputs[0].value = c.montant       || '';
-    inputs[1].value = c.date_echeance ? c.date_echeance.slice(0, 10) : '';
-    sels[1].value   = c.statut        || 'en attente';
+    document.getElementById('cotisation-adherent').value = c.adherent_id || '';
+    document.getElementById('cotisation-montant').value = c.montant || '';
+    document.getElementById('cotisation-echeance').value = c.date_echeance ? c.date_echeance.slice(0, 10) : '';
+    document.getElementById('cotisation-mode').value = c.mode_paiement || '';
+    document.getElementById('cotisation-statut').value = c.statut || 'en attente';
     form.dataset.editId = id;
     openModal('modal-cotisation');
-  } catch (err) { toast('Erreur : ' + err.message, 'error'); }
+  } catch (err) { 
+    console.error('Erreur openEditCotisation:', err);
+    toast('Erreur : ' + err.message, 'error'); 
+  }
 }
 
 async function deleteCotisation(id) {
@@ -1512,6 +1556,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initSidebarToggle();
   initModals();
   initConfirmDelete();
+  loadAdherentsSelect();
   initSearch();
   initFilterButtons();
   initSearchBoxes();

@@ -793,19 +793,23 @@
     </div>
     <div class="form-group">
       <label class="form-label">Adhérent</label>
-      <select class="form-control"><option>-- Sélectionner --</option><option>Koné Oumar</option><option>Ouédraogo Fatimata</option><option>Traoré Issa</option></select>
+      <select class="form-control" id="cotisation-adherent"><option value="">-- Sélectionner --</option></select>
     </div>
     <div class="form-row">
-      <div class="form-group"><label class="form-label">Montant (FCFA)</label><input class="form-control" type="number" placeholder="15000"/></div>
-      <div class="form-group"><label class="form-label">Date d'échéance</label><input class="form-control" type="date"/></div>
+      <div class="form-group"><label class="form-label">Montant (FCFA)</label><input class="form-control" id="cotisation-montant" type="number" placeholder="15000"/></div>
+      <div class="form-group"><label class="form-label">Date d'échéance</label><input class="form-control" id="cotisation-echeance" type="date"/></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Mode de paiement</label>
+      <select class="form-control" id="cotisation-mode"><option value="">-- Sélectionner --</option><option value="virement">Virement</option><option value="cheque">Chèque</option><option value="especes">Espèces</option><option value="carte">Carte</option></select>
     </div>
     <div class="form-group">
       <label class="form-label">Statut</label>
-      <select class="form-control"><option>En attente</option><option>Payée</option><option>En retard</option></select>
+      <select class="form-control" id="cotisation-statut"><option value="en attente">En attente</option><option value="payée">Payée</option><option value="en retard">En retard</option></select>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('modal-cotisation')">Annuler</button>
-      <button class="btn btn-primary" onclick="closeModal('modal-cotisation');toast('Cotisation enregistrée','success')"><i class="fas fa-save"></i> Enregistrer</button>
+      <button class="btn btn-primary" onclick="saveCotisation()"><i class="fas fa-save"></i> Enregistrer</button>
     </div>
   </div>
 </div>

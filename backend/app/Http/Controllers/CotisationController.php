@@ -18,7 +18,8 @@ class CotisationController extends Controller
             'adherent_id' => 'required|exists:adherents,id',
             'montant' => 'required|numeric',
             'date_echeance' => 'required|date',
-            'mode_paiement' => 'in:virement,cheque,especes,carte',
+            'mode_paiement' => 'nullable|in:virement,cheque,especes,carte',
+            'statut' => 'nullable|in:en attente,payée,en retard,annulée',
         ]);
 
         $cotisation = Cotisation::create($validated);
