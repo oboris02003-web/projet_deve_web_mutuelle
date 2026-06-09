@@ -135,25 +135,29 @@ class AdherentController extends Controller
 
     public function export(Request $request)
     {
-        $format = $request->query('format', 'csv');
-        $adherents = Adherent::get();
+        try {
+            $format = $request->query('format', 'csv');
+            $adherents = Adherent::get();
 
-        $data = [];
-        $data[] = ['Numéro Adhérent', 'Nom', 'Prénom', 'Email', 'Téléphone', 'Statut', 'Date Inscription'];
+            $data = [];
+            $data[] = ['Numéro Adhérent', 'Nom', 'Prénom', 'Email', 'Téléphone', 'Statut', 'Date Inscription'];
 
-        foreach ($adherents as $adherent) {
-            $data[] = [
-                $adherent->numero_adherent,
-                $adherent->nom,
-                $adherent->prenom,
-                $adherent->email,
-                $adherent->telephone,
-                $adherent->statut,
-                $adherent->date_inscription ? $adherent->date_inscription->format('Y-m-d') : ''
-            ];
+            foreach ($adherents as $adherent) {
+                $data[] = [
+                    $adherent->numero_adherent ?? '',
+                    $adherent->nom ?? '',
+                    $adherent->prenom ?? '',
+                    $adherent->email ?? '',
+                    $adherent->telephone ?? '',
+                    $adherent->statut ?? '',
+                    $adherent->date_inscription ? (is_string($adherent->date_inscription) ? $adherent->date_inscription : $adherent->date_inscription->format('Y-m-d')) : ''
+                ];
+            }
+
+            return $this->generateExport($data, 'adherents', $format);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erreur export adhérents: ' . $e->getMessage()], 500);
         }
-
-        return $this->generateExport($data, 'adherents', $format);
     }
 
     private function generateExport($data, $filename, $format)

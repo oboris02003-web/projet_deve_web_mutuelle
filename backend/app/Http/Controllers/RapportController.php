@@ -13,36 +13,40 @@ class RapportController extends Controller
 {
     public function export(Request $request)
     {
-        $format = $request->query('format', 'pdf');
-        
-        // Récupérer toutes les données
-        $adherents = Adherent::with(['cotisations', 'prets', 'sinistres'])->get();
-        $cotisations = Cotisation::with('adherent')->get();
-        $prets = Pret::with('adherent')->get();
-        $sinistres = Sinistre::with('adherent')->get();
-        
-        // Calculer les statistiques
-        $stats = [
-            'total_adherents' => $adherents->count(),
-            'total_cotisations' => $cotisations->count(),
-            'total_prets' => $prets->count(),
-            'total_sinistres' => $sinistres->count(),
-            'cotisations_payees' => $cotisations->where('statut', 'payée')->count(),
-            'cotisations_en_retard' => $cotisations->where('statut', 'en retard')->count(),
-            'prets_actifs' => $prets->where('statut', 'en_cours')->count(),
-            'sinistres_approuves' => $sinistres->where('statut', 'approuvé')->count(),
-            'montant_total_cotisations' => $cotisations->sum('montant'),
-            'montant_total_prets' => $prets->sum('montant'),
-            'montant_total_sinistres' => $sinistres->sum('montant_approuve'),
-        ];
-        
-        if ($format === 'csv') {
-            return $this->generateCSVReport($adherents, $cotisations, $prets, $sinistres, $stats);
-        } elseif ($format === 'pdf' || $format === 'txt') {
-            return $this->generateTextReport($adherents, $cotisations, $prets, $sinistres, $stats);
+        try {
+            $format = $request->query('format', 'pdf');
+            
+            // Récupérer toutes les données
+            $adherents = Adherent::with(['cotisations', 'prets', 'sinistres'])->get();
+            $cotisations = Cotisation::with('adherent')->get();
+            $prets = Pret::with('adherent')->get();
+            $sinistres = Sinistre::with('adherent')->get();
+            
+            // Calculer les statistiques
+            $stats = [
+                'total_adherents' => $adherents->count(),
+                'total_cotisations' => $cotisations->count(),
+                'total_prets' => $prets->count(),
+                'total_sinistres' => $sinistres->count(),
+                'cotisations_payees' => $cotisations->where('statut', 'payée')->count(),
+                'cotisations_en_retard' => $cotisations->where('statut', 'en retard')->count(),
+                'prets_actifs' => $prets->where('statut', 'approuvé')->count(),
+                'sinistres_approuves' => $sinistres->where('statut', 'approuvé')->count(),
+                'montant_total_cotisations' => $cotisations->sum('montant'),
+                'montant_total_prets' => $prets->sum('montant'),
+                'montant_total_sinistres' => $sinistres->sum('montant_remboursement'),
+            ];
+            
+            if ($format === 'csv') {
+                return $this->generateCSVReport($adherents, $cotisations, $prets, $sinistres, $stats);
+            } elseif ($format === 'pdf' || $format === 'txt') {
+                return $this->generateTextReport($adherents, $cotisations, $prets, $sinistres, $stats);
+            }
+            
+            return response()->json(['error' => 'Format non supporté'], 400);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erreur export rapport: ' . $e->getMessage()], 500);
         }
-        
-        return response()->json(['error' => 'Format non supporté'], 400);
     }
     
     private function generateCSVReport($adherents, $cotisations, $prets, $sinistres, $stats)

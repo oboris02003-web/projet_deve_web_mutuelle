@@ -63,25 +63,29 @@ class CotisationController extends Controller
 
     public function export(Request $request)
     {
-        $format = $request->query('format', 'csv');
-        $cotisations = Cotisation::with('adherent')->get();
+        try {
+            $format = $request->query('format', 'csv');
+            $cotisations = Cotisation::with('adherent')->get();
 
-        $data = [];
-        $data[] = ['ID', 'Adhérent', 'Montant', 'Échéance', 'Statut', 'Date Paiement', 'Mode Paiement'];
+            $data = [];
+            $data[] = ['ID', 'Adhérent', 'Montant', 'Échéance', 'Statut', 'Date Paiement', 'Mode Paiement'];
 
-        foreach ($cotisations as $cotisation) {
-            $data[] = [
-                $cotisation->id,
-                $cotisation->adherent ? $cotisation->adherent->nom . ' ' . $cotisation->adherent->prenom : '',
-                $cotisation->montant,
-                $cotisation->date_echeance ? $cotisation->date_echeance->format('Y-m-d') : '',
-                $cotisation->statut,
-                $cotisation->date_paiement ? $cotisation->date_paiement->format('Y-m-d') : '',
-                $cotisation->mode_paiement
-            ];
+            foreach ($cotisations as $cotisation) {
+                $data[] = [
+                    $cotisation->id ?? '',
+                    $cotisation->adherent ? ($cotisation->adherent->nom ?? '') . ' ' . ($cotisation->adherent->prenom ?? '') : '',
+                    $cotisation->montant ?? '',
+                    $cotisation->date_echeance ? (is_string($cotisation->date_echeance) ? $cotisation->date_echeance : $cotisation->date_echeance->format('Y-m-d')) : '',
+                    $cotisation->statut ?? '',
+                    $cotisation->date_paiement ? (is_string($cotisation->date_paiement) ? $cotisation->date_paiement : $cotisation->date_paiement->format('Y-m-d')) : '',
+                    $cotisation->mode_paiement ?? ''
+                ];
+            }
+
+            return $this->generateExport($data, 'cotisations', $format);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erreur export cotisations: ' . $e->getMessage()], 500);
         }
-
-        return $this->generateExport($data, 'cotisations', $format);
     }
 
     private function generateExport($data, $filename, $format)

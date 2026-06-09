@@ -63,25 +63,29 @@ class SinistreController extends Controller
 
     public function export(Request $request)
     {
-        $format = $request->query('format', 'csv');
-        $sinistres = Sinistre::with('adherent')->get();
+        try {
+            $format = $request->query('format', 'csv');
+            $sinistres = Sinistre::with('adherent')->get();
 
-        $data = [];
-        $data[] = ['ID', 'Adhérent', 'Type', 'Description', 'Montant Réclamé', 'Statut', 'Date Déclaration'];
+            $data = [];
+            $data[] = ['ID', 'Adhérent', 'Type', 'Description', 'Montant Réclamé', 'Statut', 'Date Déclaration'];
 
-        foreach ($sinistres as $sinistre) {
-            $data[] = [
-                $sinistre->id,
-                $sinistre->adherent ? $sinistre->adherent->nom . ' ' . $sinistre->adherent->prenom : '',
-                $sinistre->type_sinistre,
-                $sinistre->description,
-                $sinistre->montant_reclamation,
-                $sinistre->statut,
-                $sinistre->date_sinistre ? $sinistre->date_sinistre->format('Y-m-d') : ''
-            ];
+            foreach ($sinistres as $sinistre) {
+                $data[] = [
+                    $sinistre->id ?? '',
+                    $sinistre->adherent ? ($sinistre->adherent->nom ?? '') . ' ' . ($sinistre->adherent->prenom ?? '') : '',
+                    $sinistre->type_sinistre ?? '',
+                    $sinistre->description ?? '',
+                    $sinistre->montant_reclamation ?? '',
+                    $sinistre->statut ?? '',
+                    $sinistre->date_sinistre ? (is_string($sinistre->date_sinistre) ? $sinistre->date_sinistre : $sinistre->date_sinistre->format('Y-m-d')) : ''
+                ];
+            }
+
+            return $this->generateExport($data, 'sinistres', $format);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erreur export sinistres: ' . $e->getMessage()], 500);
         }
-
-        return $this->generateExport($data, 'sinistres', $format);
     }
 
     private function generateExport($data, $filename, $format)

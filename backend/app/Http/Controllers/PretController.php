@@ -63,25 +63,29 @@ class PretController extends Controller
 
     public function export(Request $request)
     {
-        $format = $request->query('format', 'csv');
-        $prets = Pret::with('adherent')->get();
+        try {
+            $format = $request->query('format', 'csv');
+            $prets = Pret::with('adherent')->get();
 
-        $data = [];
-        $data[] = ['ID', 'Adhérent', 'Montant', 'Taux', 'Durée', 'Statut', 'Date Demande'];
+            $data = [];
+            $data[] = ['ID', 'Adhérent', 'Montant', 'Taux', 'Durée', 'Statut', 'Date Demande'];
 
-        foreach ($prets as $pret) {
-            $data[] = [
-                $pret->id,
-                $pret->adherent ? $pret->adherent->nom . ' ' . $pret->adherent->prenom : '',
-                $pret->montant,
-                $pret->taux_interet,
-                $pret->duree_mois,
-                $pret->statut,
-                $pret->date_demande ? $pret->date_demande->format('Y-m-d') : ''
-            ];
+            foreach ($prets as $pret) {
+                $data[] = [
+                    $pret->id ?? '',
+                    $pret->adherent ? ($pret->adherent->nom ?? '') . ' ' . ($pret->adherent->prenom ?? '') : '',
+                    $pret->montant ?? '',
+                    $pret->taux_interet ?? '',
+                    $pret->duree_mois ?? '',
+                    $pret->statut ?? '',
+                    $pret->date_debut ? (is_string($pret->date_debut) ? $pret->date_debut : $pret->date_debut->format('Y-m-d')) : ''
+                ];
+            }
+
+            return $this->generateExport($data, 'prets', $format);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erreur export prets: ' . $e->getMessage()], 500);
         }
-
-        return $this->generateExport($data, 'prets', $format);
     }
 
     private function generateExport($data, $filename, $format)
