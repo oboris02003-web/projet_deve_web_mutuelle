@@ -653,7 +653,6 @@ async function loadAdherents() {
           </button>
         </td>
         <td>
-          <button class="icon-btn" title="Modifier" onclick="openEditAdherent(${a.id})"><i class="fas fa-pen"></i></button>
           <button class="icon-btn" style="margin-left:4px" onclick="deleteAdherent(${a.id}, '${(a.nom || '').replace(/'/g,"\\'")}')"><i class="fas fa-trash"></i></button>
         </td>
       </tr>`;
@@ -704,10 +703,7 @@ async function loadAyants() {
         <td><strong>${a.nom || ''} ${a.prenom || ''}</strong>${a.adherentName ? `<div class="small text-muted">Adhérent : ${a.adherentName}</div>` : ''}</td>
         <td>${a.relation || '—'}</td>
         <td>${a.date_naissance ? new Date(a.date_naissance).toLocaleDateString('fr-FR') : '—'}</td>
-        <td>
-          <button class="icon-btn" title="Modifier" onclick="openEditAyantDroit(${a.id})"><i class="fas fa-pen"></i></button>
-          <button class="icon-btn" style="margin-left:4px" onclick="deleteAyantDroit(${a.id}, '${(a.nom || '').replace(/'/g,"\\'")}')"><i class="fas fa-trash"></i></button>
-        </td>
+        <td></td>
       </tr>`).join('');
 
     filterAyantsDroit();
@@ -736,10 +732,7 @@ async function loadAyantsDroitForAdherent(adherentId) {
         <td><strong>${a.nom || ''} ${a.prenom || ''}</strong></td>
         <td>${a.relation || '—'}</td>
         <td>${a.date_naissance ? new Date(a.date_naissance).toLocaleDateString('fr-FR') : '—'}</td>
-        <td>
-          <button class="icon-btn" title="Modifier" onclick="openEditAyantDroit(${a.id}, ${adherentId})"><i class="fas fa-pen"></i></button>
-          <button class="icon-btn" style="margin-left:4px" onclick="deleteAyantDroit(${a.id}, ${adherentId}, '${(a.nom || '').replace(/'/g,"\\'")}')"><i class="fas fa-trash"></i></button>
-        </td>
+        <td></td>
       </tr>`).join('');
 
     filterAyantsDroit();
